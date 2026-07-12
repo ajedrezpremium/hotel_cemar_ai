@@ -876,6 +876,14 @@ addMessage(text, sender, saveToHistory = true) {
     if (this.matchAny(lower, ['gracias', 'grazas', 'thank', 'thanks'])) return this.t('ai.thanks');
     if (this.matchAny(lower, ['hola', 'ola', 'hello', 'hi', 'hey'])) return this.t('ai.greeting');
 
+    if (this.matchAny(lower, ['idioma', 'idiomas', 'lengua', 'lenguas', 'language', 'languages', 'hablas', 'falas', 'speak', 'gallego', 'galego', 'inglés', 'ingles', 'english', 'español', 'castellano'])) {
+      return this.lang === 'es'
+        ? 'Sí, hablo **español**, **gallego** e **inglés**. ¿En cuál prefieres que hablemos?'
+        : this.lang === 'gl'
+        ? 'Si, falo **español**, **galego** e **inglés**. ¿En cal prefires que falemos?'
+        : 'Yes, I speak **Spanish**, **Galician**, and **English**. Which one would you prefer?';
+    }
+
     if (this.matchAny(lower, ['habitacion', 'habitación', 'room', 'cama', 'suite', 'alojamiento'])) {
       this.context.agent = 'comercial';
       const rooms = await this.fetchRoomsFromDB();
