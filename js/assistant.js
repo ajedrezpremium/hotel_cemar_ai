@@ -1,13 +1,14 @@
-/* === HOTEL AI - ASISTENTE VIRTUAL INTELIGENTE === */
+/* === HOTEL AI - ASISTENTE VIRTUAL INTELIGENTE CON RAG === */
 /* Basado en el megaprompt: Hotel AI Ecosystem - Arquitectura de Agentes */
+/* Integración con OpenRouter para respuestas inteligentes */
 
 class HotelAI {
   constructor() {
     this.lang = 'es';
-    this.context = { profile: 'guest', authenticated: false };
-    this.agents = { comercial: null, administrativo: null, tecnico: null };
+    this.context = { profile: 'guest', authenticated: false, agent: 'orquestrador' };
+    this.conversationHistory = [];
     this.chatOpen = false;
-    this.pendingContext = null;
+    this.aiAvailable = true;
     this.init();
   }
 
@@ -151,13 +152,43 @@ class HotelAI {
     input.value = '';
 
     this.addMessage(text, 'user');
+    this.conversationHistory.push({ sender: 'user', text });
+
     this.showTyping();
 
-    const delay = 400 + Math.random() * 600;
-    await new Promise(r => setTimeout(r, delay));
-    this.hideTyping();
-    const response = await this.processMessage(text);
-    this.addMessage(response, 'ai');
+    try {
+      const response = await this.callAI(text);
+      this.hideTyping();
+      this.addMessage(response, 'ai');
+      this.conversationHistory.push({ sender: 'ai', text: response });
+    } catch {
+      this.hideTyping();
+      const fallback = await this.processLocalFallback(text);
+      this.addMessage(fallback, 'ai');
+      this.conversationHistory.push({ sender: 'ai', text: fallback });
+    }
+  }
+
+  async callAI(message) {
+    const res = await fetch('/api/ai-chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message,
+        lang: this.lang,
+        agent: this.context.agent || 'orquestrador',
+        history: this.conversationHistory.slice(-10),
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+    if (data.agent) this.context.agent = data.agent;
+    return data.response;
   }
 
   addMessage(text, sender) {
@@ -201,39 +232,51 @@ class HotelAI {
       .replace(/•/g, '&bull;');
   }
 
-  async processMessage(text) {
+  matchAny(text, keywords) {
+    return keywords.some(k => text.includes(k));
+  }
+
+  async processLocalFallback(text) {
     const lower = text.toLowerCase().trim();
 
-    // === AGENTE COMERCIAL (Experiencia del Cliente y Conversión) ===
-    if (this.matchAny(lower, ['habitacion', 'habitación', 'room', 'habitacion', 'cama', 'suite', 'alojamiento', 'aloxamento', 'accommodation', 'dormir', 'durmir', 'sleep'])) {
+    // Fast path - greetings and thanks (no API needed)
+    if (this.matchAny(lower, ['gracias', 'grazas', 'thank', 'thanks'])) {
+      return this.t('ai.thanks');
+    }
+    if (this.matchAny(lower, ['hola', 'ola', 'hello', 'hi', 'hey'])) {
+      return this.t('ai.greeting');
+    }
+
+    // Try Supabase dynamic data
+    if (this.matchAny(lower, ['habitacion', 'habitación', 'room', 'cama', 'suite', 'alojamiento'])) {
       this.context.agent = 'comercial';
-      const dynamicRooms = await this.fetchRoomsFromDB();
-      if (dynamicRooms) return dynamicRooms;
+      const rooms = await this.fetchRoomsFromDB();
+      if (rooms) return rooms;
       return this.t('ai.rooms');
     }
 
-    if (this.matchAny(lower, ['precio', 'prezo', 'price', 'precio', 'custa', 'cost', 'tarifa', 'canto', 'canto custa', 'how much', '€', 'euros', 'money', 'diñeiro', 'dinero'])) {
+    if (this.matchAny(lower, ['precio', 'prezo', 'price', 'tarifa', 'canto', 'cost'])) {
       this.context.agent = 'comercial';
-      const dynamicPrices = await this.fetchPricesFromDB();
-      if (dynamicPrices) return dynamicPrices;
+      const prices = await this.fetchPricesFromDB();
+      if (prices) return prices;
       return this.t('ai.fallbackPrice');
     }
 
-    if (this.matchAny(lower, ['reserv', 'booking', 'book', 'reserve', 'reserva', 'reservar', 'habitacións', 'rooms availab'])) {
+    if (this.matchAny(lower, ['reserv', 'booking', 'book', 'reserva'])) {
       this.context.agent = 'comercial';
       return `${this.t('ai.prices')}<br><br>👉 <a href="#reservas" onclick="document.getElementById('aiClose')?.click(); smoothScroll('#reservas')">${this.lang === 'es' ? 'Ir al formulario de reserva' : this.lang === 'gl' ? 'Ir ao formulario de reserva' : 'Go to booking form'}</a>`;
     }
 
-    if (this.matchAny(lower, ['promoción', 'promocion', 'promoción', 'promotion', 'promo', 'oferta', 'offer', 'desconto', 'discount', 'desconto', 'descuento'])) {
+    if (this.matchAny(lower, ['promoción', 'promocion', 'promotion', 'oferta', 'offer', 'desconto'])) {
       this.context.agent = 'comercial';
       return this.lang === 'es'
         ? 'Actualmente tenemos activas varias promociones. Te recomiendo consultar todas las ofertas disponibles en nuestra sección de <a href="#servicios">Promociones</a> o contactar con recepción para ofertas personalizadas.'
         : this.lang === 'gl'
-        ? 'Actualmente temos activas varias promocións. Recoméndoche consultar todas as ofertas dispoñibles na nosa sección de <a href="#servicios">Promocións</a> ou contactar con recepción para ofertas personalizadas.'
+        ? 'Actualmente temos activas varias promocións. Recoméndoche consultar todas as ofertas dispoñibles na nosa sección de <a href="#servizos">Promocións</a> ou contactar con recepción para ofertas personalizadas.'
         : 'We currently have several promotions active. I recommend checking all available offers in our <a href="#services">Promotions</a> section or contacting reception for personalized offers.';
     }
 
-    if (this.matchAny(lower, ['spa', 'relax', 'bienestar', 'benestar', 'wellness', 'masaxe', 'masaje', 'massage'])) {
+    if (this.matchAny(lower, ['spa', 'relax', 'bienestar', 'benestar', 'wellness'])) {
       this.context.agent = 'comercial';
       return this.lang === 'es'
         ? 'Contamos con un entorno natural ideal para el bienestar. Aunque no disponemos de spa cubierto, nuestra piscina exterior, jardines y el Club Hípico ofrecen experiencias de relajación únicas. Más información en <a href="#servicios">Servicios</a>.'
@@ -242,23 +285,19 @@ class HotelAI {
         : 'We have a natural environment ideal for wellness. Although we don\'t have an indoor spa, our outdoor pool, gardens, and Equestrian Club offer unique relaxation experiences. More info at <a href="#services">Services</a>.';
     }
 
-    // === UBICACIÓN / LOCALIZACIÓN ===
-    if (this.matchAny(lower, ['localización', 'localizacion', 'ubicación', 'ubicacion', 'location', 'onde', 'where', 'dirección', 'direccion', 'address', 'mapa', 'map', 'como chegar', 'como llegar', 'how to get'])) {
+    if (this.matchAny(lower, ['localización', 'ubicación', 'location', 'onde', 'where', 'dirección', 'address', 'mapa', 'como chegar', 'como llegar'])) {
       return this.t('ai.location');
     }
 
-    // === CONTACTO ===
-    if (this.matchAny(lower, ['contacto', 'contact', 'teléfono', 'telefono', 'phone', 'email', 'correo', 'mail'])) {
+    if (this.matchAny(lower, ['contacto', 'contact', 'teléfono', 'phone', 'email', 'correo'])) {
       return this.t('ai.contact');
     }
 
-    // === ACTIVIDADES ===
-    if (this.matchAny(lower, ['actividad', 'actividade', 'activity', 'actividades', 'o que facer', 'qué hacer', 'what to do', 'horse', 'cabalo', 'caballo', 'hípico', 'hipico', 'equestrian', 'paintball', 'kayak', 'piscina', 'pool', 'campamento', 'camp', 'campamento', 'xadrez', 'ajedrez', 'chess', 'ruta', 'trail', 'sendeirismo', 'senderismo', 'hiking'])) {
+    if (this.matchAny(lower, ['actividad', 'actividade', 'activity', 'horse', 'cabalo', 'hípico', 'paintball', 'kayak', 'piscina', 'pool', 'campamento', 'senderismo'])) {
       return this.t('ai.activities');
     }
 
-    // === RESTAURANTE ===
-    if (this.matchAny(lower, ['restaurante', 'restaurant', 'comida', 'food', 'comer', 'xantar', 'cena', 'dinner', 'cear', 'almorzo', 'desayuno', 'breakfast', 'gastronomía', 'gastronomia', 'galician food', 'cociña', 'cocina', 'cociña galega'])) {
+    if (this.matchAny(lower, ['restaurante', 'restaurant', 'comida', 'food', 'comer', 'cena', 'dinner', 'breakfast', 'cociña'])) {
       return this.lang === 'es'
         ? 'Nuestro restaurante ofrece gastronomía gallega tradicional con productos de temporada. Disponemos de desayuno, media pensión y menú del día. ¡Pregúntanos por nuestros platos estrella! Más info en <a href="#servicios">Servicios</a>.'
         : this.lang === 'gl'
@@ -266,17 +305,7 @@ class HotelAI {
         : 'Our restaurant offers traditional Galician cuisine with seasonal products. We serve breakfast, half board, and daily menu. Ask us about our signature dishes! More info at <a href="#services">Services</a>.';
     }
 
-    // === AGRADECIMIENTOS / SALUDOS ===
-    if (this.matchAny(lower, ['gracias', 'grazas', 'thank', 'thanks', 'moitas grazas', 'muchas gracias', 'thank you'])) {
-      return this.t('ai.thanks');
-    }
-
-    if (this.matchAny(lower, ['hola', 'ola', 'hello', 'hi', 'hey', 'bos días', 'boas tardes', 'boas noites', 'buenos días', 'good morning', 'good afternoon', 'bo día'])) {
-      return this.t('ai.greeting');
-    }
-
-    // === AGENTE ADMINISTRATIVO (Proveedores / Facturación) ===
-    if (this.matchAny(lower, ['proveedor', 'provedor', 'supplier', 'invoice', 'factura', 'facturación', 'facturacion', 'pago', 'payment', 'proveedores'])) {
+    if (this.matchAny(lower, ['proveedor', 'provedor', 'supplier', 'invoice', 'factura', 'pago', 'payment'])) {
       this.context.agent = 'administrativo';
       this.context.profile = 'proveedor';
       return this.lang === 'es'
@@ -286,8 +315,7 @@ class HotelAI {
         : 'Welcome, supplier. For invoice and payment management, contact our administrative department at <a href="mailto:recepcion@hhotelcemar.es">recepcion@hhotelcemar.es</a> or call <strong>+34 986 664 506</strong>.';
     }
 
-    // === AGENTE TÉCNICO (Staff / Mantenimiento) ===
-    if (this.matchAny(lower, ['mantenimiento', 'mantemento', 'maintenance', 'avaría', 'avería', 'breakdown', 'incidencia', 'issue', 'técnico', 'tecnico', 'technical', 'staff', 'persoal', 'personal'])) {
+    if (this.matchAny(lower, ['mantenimiento', 'mantemento', 'maintenance', 'avaría', 'avería', 'incidencia', 'técnico', 'staff'])) {
       this.context.agent = 'tecnico';
       this.context.profile = 'staff';
       return this.lang === 'es'
@@ -297,13 +325,8 @@ class HotelAI {
         : 'Hello. To report a technical issue, contact the internal maintenance team at reception or write to <a href="mailto:recepcion@hhotelcemar.es">recepcion@hhotelcemar.es</a> with the breakdown report. If you are authenticated staff, you can access the internal panel from the admin menu.';
     }
 
-    // === DEFAULT - ORQUESTRADOR CENTRAL ===
     this.context.agent = 'orquestrador';
     return this.t('ai.notFound');
-  }
-
-  matchAny(text, keywords) {
-    return keywords.some(k => text.includes(k));
   }
 
   async fetchRoomsFromDB() {
@@ -319,8 +342,7 @@ class HotelAI {
 
       rooms.forEach(r => {
         const name = r[`name_${this.lang}`] || r.name_es;
-        const price = r.base_price;
-        msg += `• **${name}** — desde **${price}€**/noche\n`;
+        msg += `• **${name}** — desde **${r.base_price}€**/noche\n`;
       });
 
       msg += `\n👉 Puedes consultar disponibilidad y reservar en nuestro [Sistema de Reservas](/reservas).`;

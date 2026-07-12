@@ -24,6 +24,7 @@
     "STRIPE_WEBHOOK_SECRET": "@stripe_webhook_secret",
     "PAYPAL_CLIENT_ID": "@paypal_client_id",
     "PAYPAL_CLIENT_SECRET": "@paypal_client_secret",
+    "OPENROUTER_API_KEY": "@openrouter_api_key",
     "SITE_URL": "@site_url"
   }
 }
