@@ -200,34 +200,51 @@ class HotelAI {
       this.hideTyping();
       this.addMessage(response, 'ai');
       this.conversationHistory.push({ sender: 'ai', text: response });
-    } catch {
+    } catch (e) {
+      console.warn('AI call failed, using fallback:', e);
       this.hideTyping();
-      const fallback = await this.processLocalFallback(text);
-      this.addMessage(fallback, 'ai');
-      this.conversationHistory.push({ sender: 'ai', text: fallback });
+      try {
+        const fallback = await this.processLocalFallback(text);
+        this.addMessage(fallback, 'ai');
+        this.conversationHistory.push({ sender: 'ai', text: fallback });
+      } catch (e2) {
+        console.error('Fallback also failed:', e2);
+        this.addMessage(this.t('ai.notFound'), 'ai');
+        this.conversationHistory.push({ sender: 'ai', text: this.t('ai.notFound') });
+      }
     }
   }
 
   async callAI(message) {
-    const res = await fetch('/api/ai-chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message,
-        lang: this.lang,
-        agent: this.context.agent || 'orquestrador',
-        history: this.conversationHistory.slice(-10),
-      }),
-    });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
 
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || `HTTP ${res.status}`);
+    try {
+      const res = await fetch('/api/ai-chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message,
+          lang: this.lang,
+          agent: this.context.agent || 'orquestrador',
+          history: this.conversationHistory.slice(-10),
+        }),
+        signal: controller.signal,
+      });
+      clearTimeout(timeout);
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+      if (data.agent) this.context.agent = data.agent;
+      return data.response;
+    } catch (err) {
+      clearTimeout(timeout);
+      throw err;
     }
-
-    const data = await res.json();
-    if (data.agent) this.context.agent = data.agent;
-    return data.response;
   }
 
   addMessage(text, sender) {

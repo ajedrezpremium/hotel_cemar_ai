@@ -120,6 +120,7 @@ export default async function handler(request) {
         max_tokens: 600,
         top_p: 0.95,
       }),
+      signal: AbortSignal.timeout(12000),
     });
 
     if (!response.ok) {
