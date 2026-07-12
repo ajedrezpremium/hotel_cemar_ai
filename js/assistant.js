@@ -957,13 +957,6 @@ function initHotelAI() {
   window.hotelAI = new HotelAI();
   window.smoothScroll = smoothScroll;
   console.log('[HotelAI] Initialized:', !!window.hotelAI);
-  // Debug badge - force visible
-  const badge = document.createElement('div');
-  badge.style.cssText = 'position:fixed;top:10px;right:10px;background:#e74c3c;color:#fff;padding:8px 12px;border-radius:4px;font:12px monospace;z-index:999999;box-shadow:0 2px 10px rgba(0,0,0,0.3)';
-  badge.textContent = '🔴 HotelAI INIT OK';
-  document.body.appendChild(badge);
-  setTimeout(() => badge.remove(), 5000);
-  window.smoothScroll = smoothScroll;
 }
 
 if (document.readyState === 'loading') {
