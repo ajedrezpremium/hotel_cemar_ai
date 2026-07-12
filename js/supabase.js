@@ -97,10 +97,37 @@ async function getCurrentUserRole() {
   return profile?.role || 'guest';
 }
 
-async function onAuthStateChange(callback) {
+async function saveConversation(sessionId, userMessage, aiResponse, agentUsed, lang) {
   const client = getSupabase();
-  if (!client) return { data: { subscription: { unsubscribe: () => {} } } };
-  return client.auth.onAuthStateChange(callback);
+  if (!client) return { error: 'Supabase not configured' };
+
+  const { data, error } = await client
+    .from('ai_conversations')
+    .insert({
+      session_id: sessionId,
+      user_message: userMessage,
+      ai_response: aiResponse,
+      agent_used: agentUsed,
+      lang: lang
+    })
+    .select();
+
+  return { data, error };
+}
+
+async function getConversationHistory(sessionId, limit = 20) {
+  const client = getSupabase();
+  if (!client) return null;
+
+  const { data, error } = await client
+    .from('ai_conversations')
+    .select('*')
+    .eq('session_id', sessionId)
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  if (error) return null;
+  return data?.reverse() || [];
 }
 
 export {
@@ -114,5 +141,7 @@ export {
   getSession,
   getUserProfile,
   getCurrentUserRole,
-  onAuthStateChange
+  onAuthStateChange,
+  saveConversation,
+  getConversationHistory
 };

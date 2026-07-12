@@ -14,9 +14,42 @@ class HotelAI {
     this.currentUtterance = null;
     this.storageKey = 'hotel_ai_chat_history';
     this.maxHistory = 10;
+    this.sessionId = this.getOrCreateSessionId();
     this.authUnsubscribe = null;
     this.loadHistory();
     this.init();
+  }
+
+  getOrCreateSessionId() {
+    let sessionId = localStorage.getItem('hotel_ai_session_id');
+    if (!sessionId) {
+      sessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('hotel_ai_session_id', sessionId);
+    }
+    return sessionId;
+  }
+
+  async loadHistory() {
+    try {
+      // Load from localStorage first (immediate UI)
+      const stored = localStorage.getItem(this.storageKey);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        this.conversationHistory = Array.isArray(parsed) ? parsed.slice(-this.maxHistory * 2) : [];
+      }
+
+      // Then load from Supabase (server history)
+      const { getConversationHistory } = await import('./supabase.js');
+      const serverHistory = await getConversationHistory(this.sessionId, this.maxHistory);
+      if (serverHistory && serverHistory.length > 0) {
+        this.conversationHistory = serverHistory.map(m => ({
+          sender: m.user_message ? 'user' : 'ai',
+          text: m.user_message || m.ai_response
+        }));
+      }
+    } catch (e) {
+      console.warn('Failed to load chat history:', e);
+    }
   }
 
   async init() {
@@ -436,16 +469,28 @@ class HotelAI {
       const response = await this.callAI(text);
       this.hideTyping();
       this.addMessage(response, 'ai');
+      await this.saveConversation(text, response);
     } catch (e) {
       console.warn('AI call failed, using fallback:', e);
       this.hideTyping();
       try {
         const fallback = await this.processLocalFallback(text);
         this.addMessage(fallback, 'ai');
+        await this.saveConversation(text, fallback);
       } catch (e2) {
         console.error('Fallback also failed:', e2);
         this.addMessage(this.t('ai.notFound'), 'ai');
+        await this.saveConversation(text, this.t('ai.notFound'));
       }
+    }
+  }
+
+  async saveConversation(userMessage, aiResponse) {
+    try {
+      const { saveConversation } = await import('./supabase.js');
+      await saveConversation(this.sessionId, userMessage, aiResponse, this.context.agent, this.lang);
+    } catch (e) {
+      console.warn('Failed to save conversation:', e);
     }
   }
 
