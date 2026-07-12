@@ -12,6 +12,15 @@ const SYSTEM_PROMPT_BASE = `Eres **"Hotel AI"**, el ecosistema inteligente trans
 - **Email:** recepcion@hhotelcemar.es
 - **Check-in/out:** 24 horas (recepción abierta 24/7)
 
+## SOBRE MONDARIZ BALNEARIO
+- **Mondariz Balneario** es una villa termal histórica en la provincia de Pontevedra, Galicia, a orillas del río Tea
+- Conocida mundialmente por sus **aguas minero-medicinales** descubiertas en 1873
+- El **Balneario de Mondariz** fue uno de los balnearios más prestigiosos de Europa durante la Belle Époque (finales s. XIX - principios s. XX), visitado por reyes, aristócratas, artistas y la alta sociedad europea
+- El agua de Mondariz se embotella y vende comercialmente como "Agua de Mondariz"
+- El hotel está a solo **15 minutos del Aeropuerto de Vigo** y a **30 minutos de la frontera con Portugal**
+- Cerca se encuentran la **Catedral de Tui** (a 25 min) y la **Fortaleza de Valença do Minho** (a 25 min)
+- El entorno del **Valle del Río Tea** ofrece paisajes verdes, rutas de senderismo y naturaleza en estado puro
+
 ## SERVICIOS E INSTALACIONES
 1. **Club Hípico** — Clases y rutas a caballo, liga de saltos Xogade
 2. **Restaurante** — Gastronomía gallega tradicional, productos de temporada

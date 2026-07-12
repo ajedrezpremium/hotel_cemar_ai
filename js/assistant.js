@@ -543,6 +543,8 @@ class HotelAI {
 
     if (this.matchAny(lower, ['actividad', 'actividade', 'activity', 'horse', 'cabalo', 'hípico', 'paintball', 'kayak', 'piscina', 'pool', 'campamento', 'senderismo'])) return this.t('ai.activities');
 
+    if (this.matchAny(lower, ['mondariz', 'balneario', 'villa termal', 'augas', 'termas', 'termal', 'spa town', 'pueblo', 'valle del tea', 'val do tea'])) return this.t('ai.mondariz');
+
     if (this.matchAny(lower, ['restaurante', 'restaurant', 'comida', 'food', 'comer', 'cena', 'dinner', 'breakfast', 'cociña'])) {
       return this.lang === 'es'
         ? 'Nuestro restaurante ofrece gastronomía gallega tradicional con productos de temporada. Disponemos de desayuno, media pensión y menú del día. ¡Pregúntanos por nuestros platos estrella! Más info en <a href="#servicios">Servicios</a>.'

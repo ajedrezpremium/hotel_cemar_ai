@@ -34,7 +34,8 @@ const TRANSLATIONS = {
       default: 'Gracias por tu mensaje. Permíteme consultar la información más adecuada para ti. ¿Podrías darme más detalles? Así podré ayudarte de forma más precisa.',
       fallbackPrice: 'Actualmente no dispongo de esa tarifa exacta en mi base de datos. Para obtener el precio más actualizado, por favor consulta nuestro [buscador de reservas online](/reservas).',
       langDetect: 'Detecto que prefieres el {lang}. Estaré encantado de atenderte en ese idioma.',
-      notFound: 'No tengo una respuesta específica para esa consulta. ¿Prefieres preguntarme sobre **habitaciones**, **precios**, **actividades**, **localización** o **contacto**?'
+      notFound: 'No tengo una respuesta específica para esa consulta. ¿Prefieres preguntarme sobre **habitaciones**, **precios**, **actividades**, **localización** o **contacto**?',
+      mondariz: '**Mondariz Balneario** es una histórica **villa termal** en el corazón del **Valle del Río Tea**, en Pontevedra, Galicia. 🌿\n\nSus **aguas minero-medicinales** fueron descubiertas en 1873, convirtiendo al **Balneario de Mondariz** en uno de los más prestigiosos de Europa durante la Belle Époque, visitado por reyes y aristócratas. Hoy puedes disfrutar de sus paisajes verdes, rutas de senderismo y la famosa **Agua de Mondariz**.\n\n📍 El Hotel CEMAR está aquí mismo, a solo **15 min del Aeropuerto de Vigo** y **30 min de la frontera con Portugal**. ¡Un destino perfecto para conectar con la naturaleza y la historia!'
     }
   },
 
@@ -73,7 +74,8 @@ const TRANSLATIONS = {
       default: 'Grazas pola túa mensaxe. Permíteme consultar a información máis axeitada para ti. Poderías darme máis detalles? Así poderé axudarte de forma máis precisa.',
       fallbackPrice: 'Actualmente non dispoño desa tarifa exacta na miña base de datos. Para obter o prezo máis actualizado, por favor consulta o noso [buscador de reservas online](/reservas).',
       langDetect: 'Detecto que prefires o {lang}. Estarei encantado de atenderte nese idioma.',
-      notFound: 'Non teño unha resposta específica para esa consulta. Prefires preguntarme sobre **habitacións**, **prezos**, **actividades**, **localización** ou **contacto**?'
+      notFound: 'Non teño unha resposta específica para esa consulta. Prefires preguntarme sobre **habitacións**, **prezos**, **actividades**, **localización** ou **contacto**?',
+      mondariz: '**Mondariz Balneario** é unha histórica **vila termal** no corazón do **Val do Río Tea**, en Pontevedra, Galicia. 🌿\n\nAs súas **augas minero-medicinais** foron descubertas en 1873, convertindo ao **Balneario de Mondariz** nun dos máis prestixiosos de Europa durante a Belle Époque, visitado por reis e aristócratas. Hoxe podes gozar das súas paisaxes verdes, rutas de sendeirismo e a famosa **Auga de Mondariz**.\n\n📍 O Hotel CEMAR está aquí mesmo, a só **15 min do Aeroporto de Vigo** e **30 min da fronteira con Portugal**. Un destino perfecto para conectar coa natureza e a historia!'
     }
   },
 
@@ -112,7 +114,8 @@ const TRANSLATIONS = {
       default: 'Thank you for your message. Let me check the most appropriate information for you. Could you provide more details? That way I can help you more accurately.',
       fallbackPrice: 'I currently don\'t have that exact rate in my database. For the most updated price, please check our [online booking system](/book).',
       langDetect: 'I detect that you prefer {lang}. I will be happy to assist you in that language.',
-      notFound: 'I don\'t have a specific response for that query. Would you like to ask me about **rooms**, **prices**, **activities**, **location**, or **contact**?'
+      notFound: 'I don\'t have a specific response for that query. Would you like to ask me about **rooms**, **prices**, **activities**, **location**, or **contact**?',
+      mondariz: '**Mondariz Balneario** is a historic **spa town** in the heart of the **Tea River Valley**, in Pontevedra, Galicia. 🌿\n\nIts **mineral-medicinal waters** were discovered in 1873, making the **Balneario de Mondariz** one of Europe\'s most prestigious spas during the Belle Époque, visited by royalty and aristocrats. Today you can enjoy its green landscapes, hiking trails, and the famous **Mondariz Water**.\n\n📍 Hotel CEMAR is right here, just **15 min from Vigo Airport** and **30 min from the Portugal border**. A perfect destination to connect with nature and history!'
     }
   }
 };
