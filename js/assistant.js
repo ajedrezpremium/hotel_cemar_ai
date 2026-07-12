@@ -4,7 +4,7 @@
 /* Build: 2026-01-17-v2 */
 
 class HotelAI {
-  constructor() {
+constructor() {
     console.log('[HotelAI] Constructor called');
     this.lang = 'es';
     this.context = { profile: 'guest', authenticated: false, agent: 'orquestrador' };
@@ -23,12 +23,26 @@ class HotelAI {
       this.init();
     } catch (e) {
       console.error('[HotelAI] Init failed:', e);
+      this.forceRender();
     }
-    // Force-create widget immediately as fallback
+    // Force widget creation as last resort
+    setTimeout(() => this.ensureWidgetExists(), 100);
+  }
+
+  ensureWidgetExists() {
     if (!document.getElementById('hotelAIContainer')) {
       console.log('[HotelAI] Force rendering widget...');
+      this.forceRender();
+    }
+  }
+
+  forceRender() {
+    try {
       this.render();
       this.bindEvents();
+      console.log('[HotelAI] Force render complete');
+    } catch (e) {
+      console.error('[HotelAI] Force render failed:', e);
     }
   }
 
