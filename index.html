@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel CEMAR | Complejo Natural · Mondariz Balneario</title>
+  <meta name="description" content="Hotel CEMAR en Mondariz Balneario, Pontevedra. Naturaleza, confort y tradición en el corazón de las Rías Baixas. Reserva tu estancia.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    window.ENV = {
+      SUPABASE_URL: '',
+      SUPABASE_ANON_KEY: '',
+      STRIPE_PUBLISHABLE_KEY: '',
+      PAYPAL_CLIENT_ID: ''
+    };
+  </script>
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="header" id="header">
+    <div class="container header-inner">
+      <a href="#inicio" class="logo">
+        <span class="logo-icon"><i class="fas fa-tree"></i></span>
+        Hotel CEMAR
+      </a>
+      <nav class="nav" id="nav">
+        <a href="#inicio" class="nav-link active" data-i18n="nav.inicio">Inicio</a>
+        <a href="#habitaciones" class="nav-link" data-i18n="nav.habitaciones">Habitaciones</a>
+        <a href="#servicios" class="nav-link" data-i18n="nav.servicios">Servicios</a>
+        <a href="#galeria" class="nav-link" data-i18n="nav.galeria">Galería</a>
+        <a href="#reservas" class="nav-link" data-i18n="nav.reservas">Reservas</a>
+        <a href="#contacto" class="nav-link" data-i18n="nav.contacto">Contacto</a>
+        <div class="lang-selector">
+          <button class="lang-btn active" data-lang="es" onclick="setLang('es')">ES</button>
+          <button class="lang-btn" data-lang="gl" onclick="setLang('gl')">GL</button>
+          <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+        </div>
+      </nav>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Menú">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="inicio">
+    <div class="hero-particles">
+      <div class="hero-particle" style="top:20%;left:10%;animation-delay:0s;"></div>
+      <div class="hero-particle" style="top:40%;left:80%;animation-delay:3s;"></div>
+      <div class="hero-particle" style="top:60%;left:30%;animation-delay:6s;"></div>
+      <div class="hero-particle" style="top:80%;left:70%;animation-delay:9s;"></div>
+      <div class="hero-particle" style="top:30%;left:50%;animation-delay:12s;"></div>
+      <div class="hero-particle" style="top:70%;left:20%;animation-delay:15s;"></div>
+      <div class="hero-particle" style="top:10%;left:90%;animation-delay:4s;"></div>
+      <div class="hero-particle" style="top:90%;left:40%;animation-delay:7s;"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge" id="heroBadge">Complejo Natural · Rías Baixas · Galicia</div>
+      <h1 class="hero-title">
+        <span id="heroTitle1">Naturaleza a tu</span><br>
+        <span id="heroTitle2">Servicio</span>
+      </h1>
+      <p class="hero-desc" id="heroDesc">Enclavado en el valle del río Tea, en un entorno ajardinado de más de 300.000 m² de terreno, descubre la esencia de Galicia en estado puro.</p>
+      <div class="hero-actions">
+        <a href="#reservas" class="btn btn-gold" id="heroBtn1"><i class="fas fa-calendar-check"></i> Reservar Ahora</a>
+        <a href="#habitaciones" class="btn btn-outline" style="border-color:rgba(255,255,255,0.3);color:var(--white);" id="heroBtn2">Ver Habitaciones <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-number" id="stat1">300.000 m²</div>
+          <div class="hero-stat-label" id="stat1l">Naturaleza</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-number" id="stat2">2 Estrellas</div>
+          <div class="hero-stat-label" id="stat2l">Hotel Rural</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-number" id="stat3">24/7</div>
+          <div class="hero-stat-label" id="stat3l">Asistencia Hotel AI</div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <span>Descubre</span>
+      <i class="fas fa-chevron-down"></i>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section class="section about" id="about">
+    <div class="container">
+      <h2 class="section-title fade-in" id="aboutTitle">Sobre Nosotros</h2>
+      <p class="section-subtitle fade-in" id="aboutSubtitle">Descubre la historia y el espíritu del Complejo Natural Cemar</p>
+      <div class="about-grid">
+        <div class="about-image fade-in">
+          <div class="about-image-placeholder"><i class="fas fa-mountain"></i></div>
+          <div class="about-badge">
+            <div class="about-badge-icon"><i class="fas fa-leaf" style="color:var(--green-leaf);"></i></div>
+            <div class="about-badge-text">
+              <h4 id="aboutBadgeTitle">Entorno Natural</h4>
+              <p id="aboutBadgeSub">Valle del Río Tea</p>
+            </div>
+          </div>
+        </div>
+        <div class="about-content fade-in">
+          <h3 id="aboutName">Complejo Natural Cemar</h3>
+          <p id="aboutDesc1">En el corazón de Mondariz Balneario, el Hotel Cemar es mucho más que un alojamiento. Somos un complejo natural que integra un hotel rural de dos estrellas, un centro hípico, una escuela de ajedrez y un sinfín de actividades al aire libre.</p>
+          <p id="aboutDesc2">Rodeado de más de 300.000 m² de naturaleza, nuestras instalaciones están diseñadas para ofrecer una experiencia única de conexión con el entorno, el deporte y el bienestar.</p>
+          <div class="about-features">
+            <div class="about-feature"><i class="fas fa-utensils"></i> <span data-i18n-feat="about.feat1">Restaurante y Bar</span></div>
+            <div class="about-feature"><i class="fas fa-horse"></i> <span data-i18n-feat="about.feat2">Club Hípico</span></div>
+            <div class="about-feature"><i class="fas fa-swimmer"></i> <span data-i18n-feat="about.feat3">Piscina Exterior</span></div>
+            <div class="about-feature"><i class="fas fa-dumbbell"></i> <span data-i18n-feat="about.feat4">Fitness Center</span></div>
+            <div class="about-feature"><i class="fas fa-parking"></i> <span data-i18n-feat="about.feat5">Aparcamiento Gratuito</span></div>
+            <div class="about-feature"><i class="fas fa-wifi"></i> <span data-i18n-feat="about.feat6">WiFi Gratuito</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ROOMS ===== -->
+  <section class="section rooms" id="habitaciones">
+    <div class="container">
+      <h2 class="section-title fade-in" id="roomsTitle">Nuestras Habitaciones</h2>
+      <p class="section-subtitle fade-in" id="roomsSubtitle">Confort y calidez en plena naturaleza gallega</p>
+      <div class="rooms-grid">
+        <!-- Double -->
+        <div class="room-card fade-in">
+          <div class="room-image">
+            <i class="fas fa-bed"></i>
+            <span class="room-badge"><i class="fas fa-star"></i> Popular</span>
+          </div>
+          <div class="room-body">
+            <h3 class="room-title" data-i18n-room-name="double">Habitación Doble</h3>
+            <p class="room-desc" data-i18n-room-desc="double">Espaciosa habitación con cama de matrimonio, baño completo y vistas al jardín.</p>
+            <div class="room-amenities">
+              <span class="room-amenity"><i class="fas fa-check"></i> <span data-i18n-room-amenities="double">Cama Matrimonio, TV, Baño, WiFi, Calefacción</span></span>
+            </div>
+            <div class="room-footer">
+              <div class="room-price">
+                <span data-i18n-room-from="from">desde</span>&nbsp;<span class="room-price-amount">75€</span>&nbsp;<span class="room-price-period" data-i18n-room-night="night">/noche</span>
+              </div>
+              <a href="#reservas" class="btn btn-primary" style="padding:10px 20px;font-size:0.85rem;"><i class="fas fa-calendar-check"></i> Reservar</a>
+            </div>
+          </div>
+        </div>
+        <!-- Twin -->
+        <div class="room-card fade-in">
+          <div class="room-image">
+            <i class="fas fa-bed"></i>
+          </div>
+          <div class="room-body">
+            <h3 class="room-title" data-i18n-room-name="twin">Habitación Twin</h3>
+            <p class="room-desc" data-i18n-room-desc="twin">Dos camas individuales ideales para compartir. Todo el confort que necesitas.</p>
+            <div class="room-amenities">
+              <span class="room-amenity"><i class="fas fa-check"></i> <span data-i18n-room-amenities="twin">2 Camas, TV, Baño, WiFi, Escritorio</span></span>
+            </div>
+            <div class="room-footer">
+              <div class="room-price">
+                <span data-i18n-room-from="from">desde</span>&nbsp;<span class="room-price-amount">65€</span>&nbsp;<span class="room-price-period" data-i18n-room-night="night">/noche</span>
+              </div>
+              <a href="#reservas" class="btn btn-primary" style="padding:10px 20px;font-size:0.85rem;"><i class="fas fa-calendar-check"></i> Reservar</a>
+            </div>
+          </div>
+        </div>
+        <!-- Family -->
+        <div class="room-card fade-in">
+          <div class="room-image">
+            <i class="fas fa-bed"></i>
+            <span class="room-badge" style="background:var(--green-leaf);"><i class="fas fa-users"></i> Familia</span>
+          </div>
+          <div class="room-body">
+            <h3 class="room-title" data-i18n-room-name="family">Habitación Familiar</h3>
+            <p class="room-desc" data-i18n-room-desc="family">Amplio espacio para toda la familia. Hasta 4 huéspedes con todas las comodidades.</p>
+            <div class="room-amenities">
+              <span class="room-amenity"><i class="fas fa-check"></i> <span data-i18n-room-amenities="family">3 Camas, TV, Baño, WiFi, Zona Infantil</span></span>
+            </div>
+            <div class="room-footer">
+              <div class="room-price">
+                <span data-i18n-room-from="from">desde</span>&nbsp;<span class="room-price-amount">95€</span>&nbsp;<span class="room-price-period" data-i18n-room-night="night">/noche</span>
+              </div>
+              <a href="#reservas" class="btn btn-primary" style="padding:10px 20px;font-size:0.85rem;"><i class="fas fa-calendar-check"></i> Reservar</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SERVICES ===== -->
+  <section class="section services" id="servicios">
+    <div class="container">
+      <h2 class="section-title fade-in" id="servicesTitle">Servicios e Instalaciones</h2>
+      <p class="section-subtitle fade-in" id="servicesSubtitle">Todo lo que necesitas para una estancia inolvidable</p>
+      <div class="services-grid">
+        <div class="service-card fade-in" data-i18n-service="0">
+          <div class="service-icon"><i class="fas fa-horse"></i></div>
+          <h4 class="service-card-name">Club Hípico</h4>
+          <p class="service-card-desc">Amplia oferta ecuestre desde formación hasta ocio. Clases y rutas a caballo.</p>
+        </div>
+        <div class="service-card fade-in" data-i18n-service="1">
+          <div class="service-icon"><i class="fas fa-utensils"></i></div>
+          <h4 class="service-card-name">Restaurante</h4>
+          <p class="service-card-desc">Gastronomía gallega tradicional con productos de temporada y recetas de la abuela.</p>
+        </div>
+        <div class="service-card fade-in" data-i18n-service="2">
+          <div class="service-icon"><i class="fas fa-swimmer"></i></div>
+          <h4 class="service-card-name">Piscina Exterior</h4>
+          <p class="service-card-desc">Refrescante piscina al aire libre rodeada de jardines. Perfecta para el verano.</p>
+        </div>
+        <div class="service-card fade-in" data-i18n-service="3">
+          <div class="service-icon"><i class="fas fa-hiking"></i></div>
+          <h4 class="service-card-name">Actividades</h4>
+          <p class="service-card-desc">Paintball, kayak, rutas de senderismo, campamentos y campus deportivos.</p>
+        </div>
+        <div class="service-card fade-in" data-i18n-service="4">
+          <div class="service-icon"><i class="fas fa-graduation-cap"></i></div>
+          <h4 class="service-card-name">Escuela Tiempo Libre</h4>
+          <p class="service-card-desc">Formación en el amplio campo del tiempo libre y ocio educativo.</p>
+        </div>
+        <div class="service-card fade-in" data-i18n-service="5">
+          <div class="service-icon"><i class="fas fa-glass-cheers"></i></div>
+          <h4 class="service-card-name">Eventos</h4>
+          <p class="service-card-desc">Celebraciones, bodas, eventos corporativos en un entorno natural incomparable.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== GALLERY ===== -->
+  <section class="section gallery" id="galeria">
+    <div class="container">
+      <h2 class="section-title fade-in" id="galleryTitle">Galería</h2>
+      <p class="section-subtitle fade-in" id="gallerySubtitle">Imágenes que hablan por sí solas</p>
+      <div class="gallery-grid">
+        <div class="gallery-item fade-in"><i class="fas fa-mountain"></i></div>
+        <div class="gallery-item fade-in"><i class="fas fa-horse"></i></div>
+        <div class="gallery-item fade-in"><i class="fas fa-swimmer"></i></div>
+        <div class="gallery-item fade-in"><i class="fas fa-tree"></i></div>
+        <div class="gallery-item fade-in"><i class="fas fa-utensils"></i></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIALS ===== -->
+  <section class="section testimonials" id="testimonios">
+    <div class="container">
+      <h2 class="section-title fade-in" id="testimonialsTitle">Lo Que Dicen Nuestros Huéspedes</h2>
+      <p class="section-subtitle fade-in" id="testimonialsSubtitle">Opiniones reales de quienes ya han vivido la experiencia Cemar</p>
+      <div class="testimonials-grid">
+        <div class="testimonial-card fade-in" data-i18n-testimonial="0">
+          <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="testimonial-text" data-i18n-testimonial-text="0">Un lugar mágico. La combinación de naturaleza, caballos y la atención del personal hace que quieras volver. Los niños disfrutaron muchísimo.</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">MG</div>
+            <div>
+              <div class="testimonial-name" data-i18n-testimonial-name="0">María García</div>
+              <div class="testimonial-role" data-i18n-testimonial-role="0">Madrid</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card fade-in" data-i18n-testimonial="1">
+          <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="testimonial-text" data-i18n-testimonial-text="1">Volvemos cada año. El entorno es espectacular y las habitaciones son muy acogedoras. El restaurante, con productos gallegos, es una maravilla.</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">CR</div>
+            <div>
+              <div class="testimonial-name" data-i18n-testimonial-name="1">Carlos Rodríguez</div>
+              <div class="testimonial-role" data-i18n-testimonial-role="1">Vigo</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card fade-in" data-i18n-testimonial="2">
+          <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="testimonial-text" data-i18n-testimonial-text="2">Perfecto para desconectar. Las rutas a caballo por el valle son una experiencia única. Repetiremos sin duda.</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">AM</div>
+            <div>
+              <div class="testimonial-name" data-i18n-testimonial-name="2">Ana Martínez</div>
+              <div class="testimonial-role" data-i18n-testimonial-role="2">Ourense</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RESERVAS ===== -->
+  <section class="section reservas" id="reservas">
+    <div class="container">
+      <h2 class="section-title fade-in" id="reservasTitle">Haz tu Reserva</h2>
+      <p class="section-subtitle fade-in" id="reservasSubtitle">Selecciona fechas y confirma tu estancia en el paraíso natural</p>
+      <form class="reservas-form fade-in" id="reservaForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="checkin" id="formCheckin">Fecha de Entrada</label>
+            <input type="date" id="checkin" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="checkout" id="formCheckout">Fecha de Salida</label>
+            <input type="date" id="checkout" class="form-control" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="guests" id="formGuests">Número de Huéspedes</label>
+            <select id="guests" class="form-control" required>
+              <option value="1">1</option>
+              <option value="2" selected>2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5+</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="roomType" id="formRoom">Tipo de Habitación</label>
+            <select id="roomType" class="form-control" required>
+              <option value="" id="formOptionRoom">Selecciona...</option>
+              <option value="double" id="formOptionDouble">Habitación Doble</option>
+              <option value="twin" id="formOptionTwin">Habitación Twin</option>
+              <option value="family" id="formOptionFamily">Habitación Familiar</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fullName" id="formName">Nombre Completo</label>
+            <input type="text" id="fullName" class="form-control" placeholder="Ej: María López" required>
+          </div>
+          <div class="form-group">
+            <label for="email" id="formEmail">Correo Electrónico</label>
+            <input type="email" id="email" class="form-control" placeholder="ejemplo@correo.com" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="phone" id="formPhone">Teléfono</label>
+          <input type="tel" id="phone" class="form-control" placeholder="+34 600 000 000" required>
+        </div>
+        <div class="form-group">
+          <label for="extras" id="formExtras">¿Algo que añadir?</label>
+          <textarea id="extras" class="form-control" rows="3" placeholder="Preferencias, solicitudes especiales..." style="resize:vertical;"></textarea>
+        </div>
+        <div class="form-submit" id="formSubmitStep">
+          <button type="submit" class="btn btn-gold" id="formSubmit" style="padding:16px 48px;font-size:1.05rem;">
+            <i class="fas fa-check-circle"></i> Confirmar Reserva
+          </button>
+        </div>
+      </form>
+
+      <!-- ===== PAYMENT STEP ===== -->
+      <div class="payment-section fade-in" id="paymentSection" style="display:none;margin-top:40px;">
+        <h3 style="font-family:var(--font-serif);color:var(--green-dark);text-align:center;margin-bottom:8px;" data-i18n="reservas.payment.title">Elige tu método de pago</h3>
+        <p style="text-align:center;color:var(--slate-light);margin-bottom:32px;" data-i18n="reservas.payment.subtitle">Reserva confirmada. Selecciona cómo quieres pagar.</p>
+
+        <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:32px;">
+          <button class="btn btn-primary payment-method-btn active" data-method="stripe" id="payMethodStripe" style="padding:12px 28px;">
+            <i class="fab fa-cc-stripe"></i> Stripe
+          </button>
+          <button class="btn btn-outline payment-method-btn" data-method="paypal" id="payMethodPaypal" style="padding:12px 28px;">
+            <i class="fab fa-paypal"></i> PayPal
+          </button>
+        </div>
+
+        <div id="stripePaymentContainer" style="max-width:500px;margin:0 auto;padding:24px;background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);">
+          <div id="stripePaymentElement"></div>
+          <button class="btn btn-gold" id="stripePayBtn" style="width:100%;margin-top:20px;justify-content:center;" disabled>
+            <i class="fas fa-lock"></i> <span data-i18n="reservas.payment.payStripe">Pagar con Stripe</span>
+          </button>
+        </div>
+
+        <div id="paypalPaymentContainer" style="max-width:500px;margin:0 auto;display:none;padding:24px;background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);">
+          <div id="paypal-button-container"></div>
+        </div>
+
+        <div style="text-align:center;margin-top:20px;">
+          <p style="font-size:0.85rem;color:var(--slate-light);">
+            <i class="fas fa-shield-alt" style="color:var(--green-leaf);"></i>
+            <span data-i18n="reservas.payment.secure">Pago 100% seguro. Tus datos están protegidos.</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- ===== CONFIRMATION STEP ===== -->
+      <div class="confirmation-section fade-in" id="confirmationSection" style="display:none;margin-top:40px;text-align:center;padding:48px;background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);">
+        <div style="font-size:4rem;color:var(--green-leaf);margin-bottom:16px;"><i class="fas fa-check-circle"></i></div>
+        <h3 style="font-family:var(--font-serif);color:var(--green-dark);font-size:1.8rem;margin-bottom:8px;" data-i18n="reservas.confirmation.title">¡Reserva Confirmada!</h3>
+        <p style="color:var(--slate-light);margin-bottom:8px;" data-i18n="reservas.confirmation.desc">Hemos recibido tu pago. Te enviaremos un email con los detalles.</p>
+        <p style="font-size:0.9rem;color:var(--slate-light);" id="confirmationId"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT ===== -->
+  <section class="section contact" id="contacto">
+    <div class="container">
+      <h2 class="section-title fade-in" id="contactTitle">Contacto</h2>
+      <p class="section-subtitle fade-in" id="contactSubtitle">Estamos aquí para ayudarte</p>
+      <div class="contact-grid">
+        <div class="contact-info fade-in">
+          <h3>Hotel CEMAR</h3>
+          <div class="contact-item">
+            <div class="contact-item-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <div>
+              <h4>Dirección</h4>
+              <p id="contactAddress">Carretera Ponteareas-Mondariz, KM 7, 36890 Mondariz Balneario, Pontevedra</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon"><i class="fas fa-phone-alt"></i></div>
+            <div>
+              <h4>Teléfono</h4>
+              <p id="contactPhone">+34 986 664 506</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon"><i class="fas fa-envelope"></i></div>
+            <div>
+              <h4>Email</h4>
+              <p id="contactEmail">recepcion@hhotelcemar.es</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon"><i class="fas fa-clock"></i></div>
+            <div>
+              <h4>Horario de Recepción</h4>
+              <p>24 horas · 7 días a la semana</p>
+            </div>
+          </div>
+          <div class="contact-socials">
+            <a href="#" class="contact-social" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="contact-social" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="contact-social" aria-label="Twitter/X"><i class="fab fa-x-twitter"></i></a>
+            <a href="#" class="contact-social" aria-label="TripAdvisor"><i class="fab fa-tripadvisor"></i></a>
+          </div>
+        </div>
+        <div class="contact-map fade-in">
+          <i class="fas fa-map-marked-alt"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo">
+            <span class="logo-icon"><i class="fas fa-tree"></i></span>
+            Hotel CEMAR
+          </div>
+          <p id="footerDesc">Complejo Natural Cemar. Naturaleza, deporte y bienestar en el corazón de las Rías Baixas. Tu refugio en Galicia.</p>
+        </div>
+        <div>
+          <h4 id="footerLinks">Enlaces</h4>
+          <ul class="footer-links">
+            <li><a href="#inicio" id="footerHotel">El Hotel</a></li>
+            <li><a href="#habitaciones" data-i18n="nav.habitaciones">Habitaciones</a></li>
+            <li><a href="#servicios" id="footerActivities">Actividades</a></li>
+            <li><a href="#contacto" id="footerContact">Contacto</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 id="footerLegal">Legal</h4>
+          <ul class="footer-links">
+            <li><a href="#" id="footerPrivacy">Política de Privacidad</a></li>
+            <li><a href="#" id="footerCookies">Política de Cookies</a></li>
+            <li><a href="#" id="footerLegal2">Aviso Legal</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 id="footerNewsletter">Suscríbete a nuestra newsletter</h4>
+          <form class="footer-newsletter" id="newsletterForm">
+            <input type="email" id="footerNewsPh" placeholder="Tu email" required>
+            <button type="submit" id="footerNewsBtn">Enviar</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p id="footerCopy">© 2026 Complejo Natural Cemar. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script src="js/translations.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/stripe.js"></script>
+  <script src="js/paypal.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/assistant.js"></script>
+</body>
+</html>
