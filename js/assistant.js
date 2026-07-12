@@ -537,7 +537,12 @@ constructor() {
 
   async callAI(message) {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15000);
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    const fallbackTriggered = { current: false };
+    const fallbackTimeout = setTimeout(() => {
+      fallbackTriggered.current = true;
+      this.showFallbackImmediate(message);
+    }, 3000);
 
     try {
       const res = await fetch('/api/ai-chat', {
@@ -552,17 +557,13 @@ constructor() {
         signal: controller.signal,
       });
       clearTimeout(timeout);
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || `HTTP ${res.status}`);
-      }
-
       const data = await res.json();
       if (data.agent) this.context.agent = data.agent;
+      this.setCachedResponse(message, data.response);
       return data.response;
     } catch (err) {
       clearTimeout(timeout);
+      clearTimeout(fallbackTimeout);
       throw err;
     }
   }
@@ -629,6 +630,38 @@ addMessage(text, sender, saveToHistory = true) {
 
   matchAny(text, keywords) {
     return keywords.some(k => text.includes(k));
+  }
+
+  // Local cache for instant responses
+  cacheKey(message) {
+    return message.toLowerCase().trim();
+  }
+
+  getCachedResponse(message) {
+    const cache = JSON.parse(localStorage.getItem('hotel_ai_cache') || '{}');
+    const key = this.cacheKey(message);
+    const entry = cache[key];
+    if (entry && Date.now() - entry.ts < 3600000) return entry.response; // 1h TTL
+    return null;
+  }
+
+  setCachedResponse(message, response) {
+    const cache = JSON.parse(localStorage.getItem('hotel_ai_cache') || '{}');
+    cache[this.cacheKey(message)] = { response, ts: Date.now() };
+    localStorage.setItem('hotel_ai_cache', JSON.stringify(cache));
+  }
+
+  // Show fallback immediately if OpenRouter is slow
+  showFallbackImmediate(message) {
+    const cached = this.getCachedResponse(message);
+    if (cached) {
+      this.hideTyping();
+      this.addMessage(cached, 'ai');
+      return;
+    }
+    const fallback = this.processLocalFallback(message);
+    this.hideTyping();
+    this.addMessage(fallback, 'ai');
   }
 
   // ============================================================
@@ -883,7 +916,7 @@ addMessage(text, sender, saveToHistory = true) {
     if (this.matchAny(lower, ['localización', 'ubicación', 'location', 'onde', 'where', 'dirección', 'address', 'mapa', 'como chegar', 'como llegar'])) return this.t('ai.location');
     if (this.matchAny(lower, ['contacto', 'contact', 'teléfono', 'phone', 'email', 'correo'])) return this.t('ai.contact');
 
-    if (this.matchAny(lower, ['actividad', 'actividade', 'activity', 'horse', 'cabalo', 'hípico', 'paintball', 'kayak', 'piscina', 'pool', 'campamento', 'senderismo'])) return this.t('ai.activities');
+    if (this.matchAny(lower, ['actividad', 'actividade', 'activity', 'horse', 'cabalo', 'hípico', 'paintball', 'kayak', 'piscina', 'pool', 'campamento', 'senderismo', 'entorno', 'alrededor', 'alrededores', 'zona', 'cerca', 'cercanías', 'cercanias'])) return this.t('ai.activities');
 
     if (this.matchAny(lower, ['servicio', 'servizo', 'service', 'instalacion', 'instalación', 'que ofrecen', 'ofrece', 'offer'])) return this.t('ai.services');
 
