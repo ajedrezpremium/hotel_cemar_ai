@@ -1210,6 +1210,120 @@ select.form-control { cursor: pointer; }
 
 .ai-chat-input button:hover { background: var(--green-dark); }
 
+.ai-mic-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: var(--cream);
+  color: var(--slate);
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.ai-mic-btn:hover { background: var(--cream-dark); color: var(--green-forest); }
+
+.ai-mic-btn.recording {
+  background: #ef4444;
+  color: white;
+  animation: pulse-mic 1.5s infinite;
+}
+
+@keyframes pulse-mic {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.5); }
+  50% { box-shadow: 0 0 0 8px rgba(239,68,68,0); }
+}
+
+.ai-voice-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  font-size: 0.8rem;
+  color: var(--slate-light);
+  background: var(--off-white);
+  border-top: 1px solid var(--cream-dark);
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* === AI MESSAGE BODY & ACTIONS === */
+.ai-message-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 100%;
+}
+
+.ai-message-actions {
+  display: flex;
+  gap: 2px;
+  margin-top: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.ai-message:hover .ai-message-actions { opacity: 1; }
+
+.ai-message.user .ai-message-actions { display: none; }
+
+.ai-action-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: var(--cream);
+  color: var(--slate-light);
+  cursor: pointer;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.ai-action-btn:hover {
+  background: var(--green-forest);
+  color: var(--white);
+  transform: scale(1.1);
+}
+
+.ai-share-whatsapp:hover { background: #25D366 !important; color: white !important; }
+.ai-share-twitter:hover { background: #1DA1F2 !important; color: white !important; }
+.ai-share-facebook:hover { background: #1877F2 !important; color: white !important; }
+
+/* === TOAST NOTIFICATION === */
+.ai-toast {
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--green-dark);
+  color: var(--white);
+  padding: 10px 24px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  z-index: 10001;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+.ai-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 .ai-chat-typing {
   display: flex;
   align-items: center;

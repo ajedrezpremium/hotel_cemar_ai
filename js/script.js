@@ -243,6 +243,14 @@ document.addEventListener('DOMContentLoaded', () => {
     header?.classList.toggle('scrolled', window.scrollY > 50);
   });
 
+  // Close AI voice if navigating away
+  window.addEventListener('beforeunload', () => {
+    if (window.hotelAI) {
+      if (window.hotelAI.isRecording) window.hotelAI.stopVoiceInput();
+      if (window.hotelAI.isSpeaking) window.hotelAI.stopSpeaking();
+    }
+  });
+
   // Smooth scroll for nav links
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', (e) => {
