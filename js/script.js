@@ -59,6 +59,13 @@ function renderContent() {
   document.getElementById('stat3') && (document.getElementById('stat3').textContent = t('hero.stat3'));
   document.getElementById('stat3l') && (document.getElementById('stat3l').textContent = t('hero.stat3l'));
 
+  // Hero location bar
+  document.getElementById('heroLocAirport') && (document.getElementById('heroLocAirport').textContent = t('hero.locAirport'));
+  document.getElementById('heroLocBorder') && (document.getElementById('heroLocBorder').textContent = t('hero.locBorder'));
+  document.getElementById('heroLocTui') && (document.getElementById('heroLocTui').textContent = t('hero.locTui'));
+  document.getElementById('heroLocValenca') && (document.getElementById('heroLocValenca').textContent = t('hero.locValenca'));
+  document.getElementById('heroScroll') && (document.getElementById('heroScroll').textContent = t('hero.scroll'));
+
   // About
   document.getElementById('aboutTitle') && (document.getElementById('aboutTitle').textContent = t('about.title'));
   document.getElementById('aboutSubtitle') && (document.getElementById('aboutSubtitle').textContent = t('about.subtitle'));
