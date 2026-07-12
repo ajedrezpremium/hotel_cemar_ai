@@ -266,9 +266,6 @@ constructor() {
       </div>
     `;
 
-    </div>
-    `;
-
     // Login Modal
     const modalHtml = `
       <div class="ai-login-modal" id="aiLoginModal" style="display:none;">
