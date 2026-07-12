@@ -117,17 +117,26 @@ async function saveConversation(sessionId, userMessage, aiResponse, agentUsed, l
 
 async function getConversationHistory(sessionId, limit = 20) {
   const client = getSupabase();
-  if (!client) return null;
+  if (!client) return [];
 
   const { data, error } = await client
     .from('ai_conversations')
-    .select('*')
+    .select('user_message, ai_response, agent_used, lang, created_at')
     .eq('session_id', sessionId)
-    .order('created_at', { ascending: false })
+    .order('created_at', { ascending: true })
     .limit(limit);
 
-  if (error) return null;
-  return data?.reverse() || [];
+  if (error) {
+    console.warn('Failed to load conversation history:', error);
+    return [];
+  }
+  return data || [];
+}
+
+async function onAuthStateChange(callback) {
+  const client = getSupabase();
+  if (!client) return { data: { subscription: { unsubscribe: () => {} } } };
+  return client.auth.onAuthStateChange(callback);
 }
 
 // Attach to window for global access (no ES modules)
