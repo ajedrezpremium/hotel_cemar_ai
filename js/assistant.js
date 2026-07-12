@@ -298,7 +298,10 @@ constructor() {
     container.innerHTML = html + modalHtml;
     document.body.appendChild(container);
     this.loadFontAwesome();
+  } catch (e) {
+    console.error('[HotelAI] Render error:', e);
   }
+}
 
   openLoginModal() {
     const modal = document.getElementById('aiLoginModal');
