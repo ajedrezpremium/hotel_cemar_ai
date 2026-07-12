@@ -51,6 +51,9 @@
 
   <!-- ===== HERO ===== -->
   <section class="hero" id="inicio">
+    <div class="hero-bg" style="position:absolute;inset:0;z-index:0;">
+      <img src="public/images/hero-hotel.webp" alt="Hotel CEMAR" style="width:100%;height:100%;object-fit:cover;opacity:0.25;" loading="eager">
+    </div>
     <div class="hero-particles">
       <div class="hero-particle" style="top:20%;left:10%;animation-delay:0s;"></div>
       <div class="hero-particle" style="top:40%;left:80%;animation-delay:3s;"></div>
@@ -100,7 +103,7 @@
       <p class="section-subtitle fade-in" id="aboutSubtitle">Descubre la historia y el espíritu del Complejo Natural Cemar</p>
       <div class="about-grid">
         <div class="about-image fade-in">
-          <div class="about-image-placeholder"><i class="fas fa-mountain"></i></div>
+          <img src="public/images/entrada-hotel.webp" alt="Entrada Hotel CEMAR" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" loading="lazy">
           <div class="about-badge">
             <div class="about-badge-icon"><i class="fas fa-leaf" style="color:var(--green-leaf);"></i></div>
             <div class="about-badge-text">
@@ -134,8 +137,8 @@
       <div class="rooms-grid">
         <!-- Double -->
         <div class="room-card fade-in">
-          <div class="room-image">
-            <i class="fas fa-bed"></i>
+          <div class="room-image" style="overflow:hidden;">
+            <img src="public/images/habitacion-doble.webp" alt="Habitación Doble" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" loading="lazy">
             <span class="room-badge"><i class="fas fa-star"></i> Popular</span>
           </div>
           <div class="room-body">
@@ -154,8 +157,8 @@
         </div>
         <!-- Twin -->
         <div class="room-card fade-in">
-          <div class="room-image">
-            <i class="fas fa-bed"></i>
+          <div class="room-image" style="overflow:hidden;">
+            <img src="public/images/habitacion-doble.webp" alt="Habitación Twin" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" loading="lazy">
           </div>
           <div class="room-body">
             <h3 class="room-title" data-i18n-room-name="twin">Habitación Twin</h3>
@@ -173,8 +176,8 @@
         </div>
         <!-- Family -->
         <div class="room-card fade-in">
-          <div class="room-image">
-            <i class="fas fa-bed"></i>
+          <div class="room-image" style="overflow:hidden;">
+            <img src="public/images/habitacion-doble.webp" alt="Habitación Familiar" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" loading="lazy">
             <span class="room-badge" style="background:var(--green-leaf);"><i class="fas fa-users"></i> Familia</span>
           </div>
           <div class="room-body">
@@ -241,11 +244,11 @@
       <h2 class="section-title fade-in" id="galleryTitle">Galería</h2>
       <p class="section-subtitle fade-in" id="gallerySubtitle">Imágenes que hablan por sí solas</p>
       <div class="gallery-grid">
-        <div class="gallery-item fade-in"><i class="fas fa-mountain"></i></div>
-        <div class="gallery-item fade-in"><i class="fas fa-horse"></i></div>
-        <div class="gallery-item fade-in"><i class="fas fa-swimmer"></i></div>
-        <div class="gallery-item fade-in"><i class="fas fa-tree"></i></div>
-        <div class="gallery-item fade-in"><i class="fas fa-utensils"></i></div>
+        <div class="gallery-item fade-in"><img src="public/images/entorno-natural.webp" alt="Entorno natural" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" loading="lazy"></div>
+        <div class="gallery-item fade-in"><img src="public/images/jardines-hotel.webp" alt="Jardines" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" loading="lazy"></div>
+        <div class="gallery-item fade-in"><img src="public/images/galeria-01.webp" alt="Instalaciones" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" loading="lazy"></div>
+        <div class="gallery-item fade-in"><img src="public/images/galeria-02.webp" alt="Salón" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" loading="lazy"></div>
+        <div class="gallery-item fade-in"><img src="public/images/galeria-03.webp" alt="Recepción" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" loading="lazy"></div>
       </div>
     </div>
   </section>
@@ -441,8 +444,8 @@
             <a href="#" class="contact-social" aria-label="TripAdvisor"><i class="fab fa-tripadvisor"></i></a>
           </div>
         </div>
-        <div class="contact-map fade-in">
-          <i class="fas fa-map-marked-alt"></i>
+        <div class="contact-map fade-in" style="overflow:hidden;">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2927.606843099636!2d-8.4750492!3d42.2234935!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd257fee0868acb1%3A0x1f706ce330f02c5f!2sR%C3%BAa%20de%20Arrocha%2C%200%2C%2036890%20Mondariz-Balneario%2C%20Pontevedra!5e0!3m2!1ses!2ses!4v1" width="100%" height="100%" style="border:0;min-height:400px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Hotel CEMAR ubicación"></iframe>
         </div>
       </div>
     </div>
