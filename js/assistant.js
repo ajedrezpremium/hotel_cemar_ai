@@ -146,6 +146,17 @@ constructor() {
     }
   }
 
+  loadFontAwesome() {
+    if (document.querySelector('link[href*="font-awesome"]')) return;
+    if (document.querySelector('script[src*="font-awesome"]')) return;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css';
+    link.integrity = 'sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==';
+    link.crossOrigin = 'anonymous';
+    document.head.appendChild(link);
+  }
+
   // ... existing methods
 
   loadHistory() {
