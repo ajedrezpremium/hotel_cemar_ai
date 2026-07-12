@@ -1,7 +1,7 @@
 const Stripe = require('stripe');
 const { handleOptions, jsonResponse, errorResponse } = require('./_lib');
 
-export default async function handler(request) {
+module.exports = async function handler(request) {
   const options = handleOptions(request);
   if (options) return options;
 

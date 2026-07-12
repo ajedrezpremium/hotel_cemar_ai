@@ -22,7 +22,7 @@ async function getPayPalAccessToken() {
   return data.access_token;
 }
 
-export default async function handler(request) {
+module.exports = async function handler(request) {
   const options = handleOptions(request);
   if (options) return options;
 

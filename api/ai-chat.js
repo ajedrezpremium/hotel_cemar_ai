@@ -72,7 +72,7 @@ const AGENT_PROMPTS = {
   orquestrador: `\n\nModo actual: **ORQUESTRADOR CENTRAL**. Evalúa la consulta y responde de la forma más útil posible. Si identificas que pertenece a un agente específico, usa ese enfoque.`,
 };
 
-export default async function handler(request) {
+module.exports = async function handler(request) {
   const options = handleOptions(request);
   if (options) return options;
 
@@ -114,7 +114,7 @@ export default async function handler(request) {
         'X-Title': 'Hotel CEMAR AI',
       },
       body: JSON.stringify({
-        model: 'openai/gpt-4o-mini',
+        model: 'meta-llama/llama-3.1-8b-instruct:free',
         messages,
         temperature: 0.7,
         max_tokens: 600,

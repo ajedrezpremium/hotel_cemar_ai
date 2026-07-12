@@ -2,7 +2,7 @@ const { getSupabaseAdmin, handleOptions, jsonResponse, errorResponse } = require
 
 const ROOM_PRICES = { double: 75, twin: 65, family: 95 };
 
-export default async function handler(request) {
+module.exports = async function handler(request) {
   const options = handleOptions(request);
   if (options) return options;
 
