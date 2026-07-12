@@ -51,13 +51,14 @@ class HotelAI {
       }
 
       // Then load from Supabase (server history)
-      const { getConversationHistory } = await import('./supabase.js');
-      const serverHistory = await getConversationHistory(this.sessionId, this.maxHistory);
-      if (serverHistory && serverHistory.length > 0) {
-        this.conversationHistory = serverHistory.map(m => ({
-          sender: m.user_message ? 'user' : 'ai',
-          text: m.user_message || m.ai_response
-        }));
+      if (window.SupabaseAPI?.getConversationHistory) {
+        const serverHistory = await window.SupabaseAPI.getConversationHistory(this.sessionId, this.maxHistory);
+        if (serverHistory && serverHistory.length > 0) {
+          this.conversationHistory = serverHistory.map(m => ({
+            sender: m.user_message ? 'user' : 'ai',
+            text: m.user_message || m.ai_response
+          }));
+        }
       }
     } catch (e) {
       console.warn('Failed to load chat history:', e);
@@ -83,24 +84,23 @@ class HotelAI {
   }
 
   async initAuth() {
-    // Import supabase auth functions dynamically
-    try {
-      const { onAuthStateChange, getCurrentUserRole } = await import('./supabase.js');
-      
-      // Initial role check
-      const role = await getCurrentUserRole();
+    // Initial role check
+    if (window.SupabaseAPI?.getCurrentUserRole) {
+      const role = await window.SupabaseAPI.getCurrentUserRole();
       this.updateContextFromRole(role);
       
       // Listen for auth changes
-      this.authUnsubscribe = onAuthStateChange((event, session) => {
-        if (session?.user) {
-          this.updateContextFromRole(undefined, session.user.id);
-        } else {
-          this.updateContextFromRole('guest');
-        }
-      });
-    } catch (e) {
-      console.warn('Supabase auth not available:', e);
+      if (window.SupabaseAPI?.onAuthStateChange) {
+        this.authUnsubscribe = window.SupabaseAPI.onAuthStateChange((event, session) => {
+          if (session?.user) {
+            this.updateContextFromRole(undefined, session.user.id);
+          } else {
+            this.updateContextFromRole('guest');
+          }
+        });
+      }
+    } else {
+      console.warn('SupabaseAPI not available');
     }
   }
 

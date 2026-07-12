@@ -130,7 +130,8 @@ async function getConversationHistory(sessionId, limit = 20) {
   return data?.reverse() || [];
 }
 
-export {
+// Attach to window for global access (no ES modules)
+window.SupabaseAPI = {
   getSupabase,
   fetchRooms,
   createReservation,
