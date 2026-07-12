@@ -61,9 +61,10 @@ function renderContent() {
 
   // Hero location bar
   document.getElementById('heroLocAirport') && (document.getElementById('heroLocAirport').textContent = t('hero.locAirport'));
-  document.getElementById('heroLocBorder') && (document.getElementById('heroLocBorder').textContent = t('hero.locBorder'));
   document.getElementById('heroLocTui') && (document.getElementById('heroLocTui').textContent = t('hero.locTui'));
   document.getElementById('heroLocValenca') && (document.getElementById('heroLocValenca').textContent = t('hero.locValenca'));
+  document.getElementById('heroLocPlayas') && (document.getElementById('heroLocPlayas').textContent = t('hero.locPlayas'));
+  document.getElementById('heroLocSantiago') && (document.getElementById('heroLocSantiago').textContent = t('hero.locSantiago'));
   document.getElementById('heroScroll') && (document.getElementById('heroScroll').textContent = t('hero.scroll'));
 
   // Hero slide labels
