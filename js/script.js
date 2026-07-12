@@ -66,6 +66,12 @@ function renderContent() {
   document.getElementById('heroLocValenca') && (document.getElementById('heroLocValenca').textContent = t('hero.locValenca'));
   document.getElementById('heroScroll') && (document.getElementById('heroScroll').textContent = t('hero.scroll'));
 
+  // Hero slide labels
+  document.getElementById('heroLab1') && (document.getElementById('heroLab1').textContent = t('hero.lab1'));
+  document.getElementById('heroLab2') && (document.getElementById('heroLab2').textContent = t('hero.lab2'));
+  document.getElementById('heroLab3') && (document.getElementById('heroLab3').textContent = t('hero.lab3'));
+  document.getElementById('heroLab4') && (document.getElementById('heroLab4').textContent = t('hero.lab4'));
+
   // About
   document.getElementById('aboutTitle') && (document.getElementById('aboutTitle').textContent = t('about.title'));
   document.getElementById('aboutSubtitle') && (document.getElementById('aboutSubtitle').textContent = t('about.subtitle'));

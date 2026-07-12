@@ -233,7 +233,7 @@ ul { list-style: none; }
   align-items: center;
   justify-content: center;
   position: relative;
-  background: linear-gradient(135deg, #2a5a3e 0%, var(--green-forest) 50%, #1a4a30 100%);
+  background: linear-gradient(135deg, #3a7a4e 0%, var(--green-forest) 50%, #2a5a3e 100%);
   overflow: hidden;
   padding-top: 80px;
 }
@@ -276,17 +276,44 @@ ul { list-style: none; }
 
 @keyframes heroCrossfade {
   0% { opacity: 0; }
-  4% { opacity: 0.5; }
-  21% { opacity: 0.5; }
+  4% { opacity: 0.75; }
+  21% { opacity: 0.75; }
   25% { opacity: 0; }
   100% { opacity: 0; }
 }
+
+/* === HERO SLIDE LABELS === */
+.hero-slide-label {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  white-space: nowrap;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+  padding: 10px 24px;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 8px;
+  opacity: 0;
+  animation: heroCrossfade 24s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.hero-slide:nth-child(1) .hero-slide-label { animation-delay: 0s; }
+.hero-slide:nth-child(2) .hero-slide-label { animation-delay: 6s; }
+.hero-slide:nth-child(3) .hero-slide-label { animation-delay: 12s; }
+.hero-slide:nth-child(4) .hero-slide-label { animation-delay: 18s; }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(135deg, rgba(26,60,42,0.65) 0%, rgba(45,90,39,0.55) 50%, rgba(15,42,26,0.65) 100%);
+  background: linear-gradient(135deg, rgba(26,60,42,0.45) 0%, rgba(45,90,39,0.35) 50%, rgba(15,42,26,0.45) 100%);
 }
 
 .hero::before {
@@ -1476,6 +1503,7 @@ select.form-control { cursor: pointer; }
   .hero-stats { flex-direction: column; gap: 24px; }
   .hero-location-bar { gap: 12px; }
   .hero-location-item { font-size: 0.78rem; padding: 6px 14px; }
+  .hero-slide-label { font-size: 0.85rem; padding: 8px 16px; bottom: 20px; white-space: normal; max-width: 90%; }
   .about-grid { grid-template-columns: 1fr; }
   .rooms-grid { grid-template-columns: 1fr; }
 
