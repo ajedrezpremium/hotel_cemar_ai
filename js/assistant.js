@@ -24,22 +24,12 @@ class HotelAI {
     } catch (e) {
       console.error('[HotelAI] Init failed:', e);
     }
-    // Debug: create visible test element
-    if (document.readyState !== 'loading') {
-      this.createDebugBadge();
-    } else {
-      document.addEventListener('DOMContentLoaded', () => this.createDebugBadge());
+    // Force-create widget immediately as fallback
+    if (!document.getElementById('hotelAIContainer')) {
+      console.log('[HotelAI] Force rendering widget...');
+      this.render();
+      this.bindEvents();
     }
-  }
-
-  createDebugBadge() {
-    if (document.getElementById('aiDebugBadge')) return;
-    const badge = document.createElement('div');
-    badge.id = 'aiDebugBadge';
-    badge.style.cssText = 'position:fixed;top:10px;right:10px;background:#4a8c3f;color:white;padding:4px 8px;border-radius:4px;font-size:11px;z-index:99999;font-family:monospace;';
-    badge.textContent = 'HotelAI loaded';
-    document.body.appendChild(badge);
-    setTimeout(() => badge.remove(), 5000);
   }
 
   getOrCreateSessionId() {
@@ -967,12 +957,12 @@ function initHotelAI() {
   window.hotelAI = new HotelAI();
   window.smoothScroll = smoothScroll;
   console.log('[HotelAI] Initialized:', !!window.hotelAI);
-  // Debug badge
+  // Debug badge - force visible
   const badge = document.createElement('div');
-  badge.style.cssText = 'position:fixed;top:10px;right:10px;background:#4a8c3f;color:#fff;padding:4px 8px;border-radius:4px;font:12px monospace;z-index:99999';
-  badge.textContent = 'HotelAI loaded';
+  badge.style.cssText = 'position:fixed;top:10px;right:10px;background:#e74c3c;color:#fff;padding:8px 12px;border-radius:4px;font:12px monospace;z-index:999999;box-shadow:0 2px 10px rgba(0,0,0,0.3)';
+  badge.textContent = '🔴 HotelAI INIT OK';
   document.body.appendChild(badge);
-  setTimeout(() => badge.remove(), 3000);
+  setTimeout(() => badge.remove(), 5000);
   window.smoothScroll = smoothScroll;
 }
 
