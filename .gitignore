@@ -9,3 +9,5 @@ Thumbs.db
 .idea/
 dist/
 next-env.d.ts
+
+.vercel
