@@ -53,12 +53,21 @@ class HotelAI {
   }
 
   async init() {
-    this.detectLanguage();
-    this.render();
-    this.bindEvents();
-    this.showWelcomeBubble();
-    this.setupSpeechRecognition();
-    await this.initAuth();
+    try {
+      this.detectLanguage();
+      this.render();
+      this.bindEvents();
+      this.showWelcomeBubble();
+      this.setupSpeechRecognition();
+      await this.initAuth();
+    } catch (e) {
+      console.error('[HotelAI] Init error:', e);
+      // Still try to render if not already done
+      if (!document.getElementById('hotelAIContainer')) {
+        this.render();
+        this.bindEvents();
+      }
+    }
   }
 
   async initAuth() {
@@ -172,7 +181,8 @@ class HotelAI {
   }
 
   render() {
-    const html = `
+    try {
+      const html = `
       <div class="ai-widget" id="aiWidget">
         <div class="ai-widget-bubble" id="aiBubble">
           <strong>Hotel AI</strong><br>
@@ -930,7 +940,13 @@ function smoothScroll(target) {
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function initHotelAI() {
   window.hotelAI = new HotelAI();
   window.smoothScroll = smoothScroll;
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initHotelAI);
+} else {
+  initHotelAI();
+}
