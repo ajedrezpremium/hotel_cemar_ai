@@ -109,8 +109,7 @@ class HotelAI {
       this.context.profile = role;
       this.context.authenticated = role !== 'guest';
     } else if (userId) {
-      const { getUserProfile } = await import('./supabase.js');
-      const profile = await getUserProfile(userId);
+      const profile = await window.SupabaseAPI?.getUserProfile(userId);
       this.context.profile = profile?.role || 'guest';
       this.context.authenticated = this.context.profile !== 'guest';
     } else {
@@ -321,8 +320,7 @@ class HotelAI {
     errorEl.style.display = 'none';
 
     try {
-      const { signInWithEmail } = await import('./supabase.js');
-      const { data, error } = await signInWithEmail(
+      const { data, error } = await window.SupabaseAPI?.signInWithEmail(
         document.getElementById('aiLoginEmail').value.trim(),
         document.getElementById('aiLoginPassword').value
       );
@@ -345,8 +343,7 @@ class HotelAI {
 
   async handleLogout() {
     try {
-      const { signOut } = await import('./supabase.js');
-      await signOut();
+      await window.SupabaseAPI?.signOut();
       await this.updateAuthUI();
     } catch (err) {
       console.error('Logout error:', err);
@@ -354,9 +351,8 @@ class HotelAI {
   }
 
   async updateAuthUI() {
-    const { getSession, getCurrentUserRole } = await import('./supabase.js');
-    const session = await getSession();
-    const role = session?.user ? await getSession().then(s => s?.user ? getCurrentUserRole() : 'guest') : 'guest';
+    const session = await window.SupabaseAPI?.getSession();
+    const role = session?.user ? await window.SupabaseAPI?.getCurrentUserRole() : 'guest';
 
     const loginBtn = document.getElementById('aiLoginBtn');
     const userSection = document.getElementById('aiUserSection');
@@ -384,8 +380,7 @@ class HotelAI {
 
   async getUserProfile(userId) {
     try {
-      const { getUserProfile } = await import('./supabase.js');
-      return getUserProfile(userId);
+      return await window.SupabaseAPI?.getUserProfile(userId);
     } catch {
       return null;
     }
@@ -509,8 +504,7 @@ class HotelAI {
 
   async saveConversation(userMessage, aiResponse) {
     try {
-      const { saveConversation } = await import('./supabase.js');
-      await saveConversation(this.sessionId, userMessage, aiResponse, this.context.agent, this.lang);
+      await window.SupabaseAPI?.saveConversation(this.sessionId, userMessage, aiResponse, this.context.agent, this.lang);
     } catch (e) {
       console.warn('Failed to save conversation:', e);
     }
