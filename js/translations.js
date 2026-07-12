@@ -36,7 +36,22 @@ const TRANSLATIONS = {
       langDetect: 'Detecto que prefieres el {lang}. Estaré encantado de atenderte en ese idioma.',
       notFound: 'No tengo una respuesta específica para esa consulta. ¿Prefieres preguntarme sobre **habitaciones**, **precios**, **actividades**, **localización** o **contacto**?',
       services: 'El Hotel CEMAR ofrece una amplia variedad de servicios:\n\n• **Club Hípico** — Clases y rutas a caballo\n• **Restaurante** — Gastronomía gallega tradicional\n• **Piscina Exterior** — En entorno ajardinado\n• **Fitness Center** — Equipamiento deportivo\n• **Actividades** — Paintball, kayak, senderismo, campamentos\n• **Escuela de Ajedrez** — Equipo propio\n• **Escuela de Tiempo Libre** — Formación en ocio\n• **Eventos** — Bodas, celebraciones, corporativos\n• **Aparcamiento gratuito** y **WiFi gratuito**\n\n📍 Más información en nuestra sección de <a href=\"#servicios\">Servicios</a>.',
-      mondariz: '**Mondariz Balneario** es una histórica **villa termal** en el corazón del **Valle del Río Tea**, en Pontevedra, Galicia. 🌿\n\nSus **aguas minero-medicinales** fueron descubiertas en 1873, convirtiendo al **Balneario de Mondariz** en uno de los más prestigiosos de Europa durante la Belle Époque, visitado por reyes y aristócratas. Hoy puedes disfrutar de sus paisajes verdes, rutas de senderismo y la famosa **Agua de Mondariz**.\n\n📍 El Hotel CEMAR está aquí mismo, a solo **20 min del Aeropuerto de Vigo**. ¡Un destino perfecto para conectar con la naturaleza y la historia!'
+      mondariz: '**Mondariz Balneario** es una histórica **villa termal** en el corazón del **Valle del Río Tea**, en Pontevedra, Galicia. 🌿\n\nSus **aguas minero-medicinales** fueron descubiertas en 1873, convirtiendo al **Balneario de Mondariz** en uno de los más prestigiosos de Europa durante la Belle Époque, visitado por reyes y aristócratas. Hoy puedes disfrutar de sus paisajes verdes, rutas de senderismo y la famosa **Agua de Mondariz**.\n\n📍 El Hotel CEMAR está aquí mismo, a solo **20 min del Aeropuerto de Vigo**. ¡Un destino perfecto para conectar con la naturaleza y la historia!',
+login: {
+        title: 'Iniciar sesión',
+        email: 'Email',
+        password: 'Contraseña',
+        submit: 'Entrar',
+        error: 'Error al iniciar sesión',
+        placeholder: 'usuario@ejemplo.com',
+        loginBtn: 'Iniciar sesión',
+        logoutBtn: 'Cerrar sesión',
+        roleGuest: 'Huésped',
+        roleStaff: 'Staff',
+        roleProveedor: 'Proveedor',
+        roleAdmin: 'Admin',
+        statusOnline: 'Online · 24/7'
+      }
     }
   },
 
@@ -77,7 +92,24 @@ const TRANSLATIONS = {
       langDetect: 'Detecto que prefires o {lang}. Estarei encantado de atenderte nese idioma.',
       notFound: 'Non teño unha resposta específica para esa consulta. Prefires preguntarme sobre **habitacións**, **prezos**, **actividades**, **localización** ou **contacto**?',
       services: 'O Hotel CEMAR ofrece unha ampla variedade de servizos:\n\n• **Club Hípico** — Clases e rutas a cabalo\n• **Restaurante** — Gastronomía galega tradicional\n• **Piscina Exterior** — En entorno axardinado\n• **Fitness Center** — Equipamento deportivo\n• **Actividades** — Paintball, kayak, sendeirismo, campamentos\n• **Escola de Xadrez** — Equipo propio\n• **Escola de Tempo Libre** — Formación en ocio\n• **Eventos** — Vodas, celebracións, corporativos\n• **Aparcadoiro gratuíto** e **WiFi gratuíto**\n\n📍 Máis información na nosa sección de <a href=\"#servizos\">Servizos</a>.',
-      mondariz: '**Mondariz Balneario** é unha histórica **vila termal** no corazón do **Val do Río Tea**, en Pontevedra, Galicia. 🌿\n\nAs súas **augas minero-medicinais** foron descubertas en 1873, convertindo ao **Balneario de Mondariz** nun dos máis prestixiosos de Europa durante a Belle Époque, visitado por reis e aristócratas. Hoxe podes gozar das súas paisaxes verdes, rutas de sendeirismo e a famosa **Auga de Mondariz**.\n\n📍 O Hotel CEMAR está aquí mesmo, a só **20 min do Aeroporto de Vigo**. Un destino perfecto para conectar coa natureza e a historia!'
+      mondariz: '**Mondariz Balneario** é unha histórica **vila termal** no corazón do **Val do Río Tea**, en Pontevedra, Galicia. 🌿\n\nAs súas **augas minero-medicinais** foron descubertas en 1873, convertindo ao **Balneario de Mondariz** nun dos máis prestixiosos de Europa durante a Belle Époque, visitado por reis e aristócratas. Hoxe podes gozar das súas paisaxes verdes, rutas de sendeirismo e a famosa **Auga de Mondariz**.\n\n📍 O Hotel CEMAR está aquí mesmo, a só **20 min do Aeroporto de Vigo**. Un destino perfecto para conectar coa natureza e a historia!',
+      login: {
+        title: 'Iniciar sesión',
+        email: 'Email',
+        password: 'Contrasinal',
+        submit: 'Entrar',
+        submitting: 'Entrando...',
+        error: 'Erro ao iniciar sesión',
+        placeholder: 'usuario@exemplo.com',
+        loginBtn: 'Iniciar sesión',
+        logoutBtn: 'Pechar sesión',
+        roleGuest: 'Hóspede',
+        roleStaff: 'Staff',
+        roleProveedor: 'Proveedor',
+        roleAdmin: 'Admin',
+        statusLogged: 'Conectado como {role}',
+        statusOnline: 'En liña · 24/7'
+      }
     }
   },
 
@@ -118,7 +150,24 @@ const TRANSLATIONS = {
       langDetect: 'I detect that you prefer {lang}. I will be happy to assist you in that language.',
       notFound: 'I don\'t have a specific response for that query. Would you like to ask me about **rooms**, **prices**, **activities**, **location**, or **contact**?',
       services: 'Hotel CEMAR offers a wide range of services:\n\n• **Equestrian Club** — Horse riding lessons and trails\n• **Restaurant** — Traditional Galician cuisine\n• **Outdoor Pool** — Set in landscaped gardens\n• **Fitness Center** — Sports equipment\n• **Activities** — Paintball, kayak, hiking, camps\n• **Chess School** — Own team\n• **Leisure School** — Education in recreation\n• **Events** — Weddings, celebrations, corporate\n• **Free parking** and **Free WiFi**\n\n📍 More info in our <a href=\"#servicios\">Services</a> section.',
-      mondariz: '**Mondariz Balneario** is a historic **spa town** in the heart of the **Tea River Valley**, in Pontevedra, Galicia. 🌿\n\nIts **mineral-medicinal waters** were discovered in 1873, making the **Balneario de Mondariz** one of Europe\'s most prestigious spas during the Belle Époque, visited by royalty and aristocrats. Today you can enjoy its green landscapes, hiking trails, and the famous **Mondariz Water**.\n\n📍 Hotel CEMAR is right here, just **20 min from Vigo Airport**. A perfect destination to connect with nature and history!'
+      mondariz: '**Mondariz Balneario** is a historic **spa town** in the heart of the **Tea River Valley**, in Pontevedra, Galicia. 🌿\n\nIts **mineral-medicinal waters** were discovered in 1873, making the **Balneario de Mondariz** one of Europe\'s most prestigious spas during the Belle Époque, visited by royalty and aristocrats. Today you can enjoy its green landscapes, hiking trails, and the famous **Mondariz Water**.\n\n📍 Hotel CEMAR is right here, just **20 min from Vigo Airport**. A perfect destination to connect with nature and history!',
+      login: {
+        title: 'Sign in',
+        email: 'Email',
+        password: 'Password',
+        submit: 'Sign in',
+        submitting: 'Signing in...',
+        error: 'Sign in failed',
+        placeholder: 'user@example.com',
+        loginBtn: 'Sign in',
+        logoutBtn: 'Sign out',
+        roleGuest: 'Guest',
+        roleStaff: 'Staff',
+        roleProveedor: 'Supplier',
+        roleAdmin: 'Admin',
+        statusLogged: 'Logged in as {role}',
+        statusOnline: 'Online · 24/7'
+      }
     }
   }
 };

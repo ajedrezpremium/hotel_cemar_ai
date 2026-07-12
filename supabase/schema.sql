@@ -85,6 +85,26 @@ CREATE TABLE newsletter (
   subscribed_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- Perfiles de usuario (staff, proveedor, guest)
+CREATE TABLE profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  email TEXT NOT NULL,
+  full_name TEXT,
+  role TEXT DEFAULT 'guest' CHECK (role IN ('guest', 'staff', 'proveedor', 'admin')),
+  department TEXT, -- 'mantenimiento', 'administracion', 'recepcion', 'comercial'
+  avatar_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Habilitar RLS
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can read own profile" ON profiles FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "Users can update own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
+CREATE POLICY "Admins can read all profiles" ON profiles FOR SELECT USING (
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+);
+
 -- Conversaciones del Hotel AI (logs)
 CREATE TABLE ai_conversations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

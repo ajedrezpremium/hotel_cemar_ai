@@ -51,3 +51,68 @@ async function subscribeNewsletter(email, lang = 'es') {
 
   return { data, error };
 }
+
+// === AUTH & PROFILES ===
+async function signInWithEmail(email, password) {
+  const client = getSupabase();
+  if (!client) return { error: 'Supabase not configured' };
+  return client.auth.signInWithPassword({ email, password });
+}
+
+async function signUpWithEmail(email, password, fullName) {
+  const client = getSupabase();
+  if (!client) return { error: 'Supabase not configured' };
+  return client.auth.signUp({ email, password, options: { data: { full_name: fullName } } });
+}
+
+async function signOut() {
+  const client = getSupabase();
+  if (!client) return { error: 'Supabase not configured' };
+  return client.auth.signOut();
+}
+
+async function getSession() {
+  const client = getSupabase();
+  if (!client) return null;
+  const { data: { session } } = await client.auth.getSession();
+  return session;
+}
+
+async function getUserProfile(userId) {
+  const client = getSupabase();
+  if (!client) return null;
+  const { data, error } = await client
+    .from('profiles')
+    .select('*')
+    .eq('id', userId)
+    .single();
+  if (error) return null;
+  return data;
+}
+
+async function getCurrentUserRole() {
+  const session = await getSession();
+  if (!session?.user) return 'guest';
+  const profile = await getUserProfile(session.user.id);
+  return profile?.role || 'guest';
+}
+
+async function onAuthStateChange(callback) {
+  const client = getSupabase();
+  if (!client) return { data: { subscription: { unsubscribe: () => {} } } };
+  return client.auth.onAuthStateChange(callback);
+}
+
+export {
+  getSupabase,
+  fetchRooms,
+  createReservation,
+  subscribeNewsletter,
+  signInWithEmail,
+  signUpWithEmail,
+  signOut,
+  getSession,
+  getUserProfile,
+  getCurrentUserRole,
+  onAuthStateChange
+};

@@ -12,7 +12,93 @@ class HotelAI {
     this.speechRecognition = null;
     this.isSpeaking = false;
     this.currentUtterance = null;
+    this.storageKey = 'hotel_ai_chat_history';
+    this.maxHistory = 10;
+    this.authUnsubscribe = null;
+    this.loadHistory();
     this.init();
+  }
+
+  async init() {
+    this.detectLanguage();
+    this.render();
+    this.bindEvents();
+    this.showWelcomeBubble();
+    this.setupSpeechRecognition();
+    await this.initAuth();
+  }
+
+  async initAuth() {
+    // Import supabase auth functions dynamically
+    try {
+      const { onAuthStateChange, getCurrentUserRole } = await import('./supabase.js');
+      
+      // Initial role check
+      const role = await getCurrentUserRole();
+      this.updateContextFromRole(role);
+      
+      // Listen for auth changes
+      this.authUnsubscribe = onAuthStateChange((event, session) => {
+        if (session?.user) {
+          this.updateContextFromRole(undefined, session.user.id);
+        } else {
+          this.updateContextFromRole('guest');
+        }
+      });
+    } catch (e) {
+      console.warn('Supabase auth not available:', e);
+    }
+  }
+
+  async updateContextFromRole(role, userId) {
+    if (role) {
+      this.context.profile = role;
+      this.context.authenticated = role !== 'guest';
+    } else if (userId) {
+      const { getUserProfile } = await import('./supabase.js');
+      const profile = await getUserProfile(userId);
+      this.context.profile = profile?.role || 'guest';
+      this.context.authenticated = this.context.profile !== 'guest';
+    } else {
+      this.context.profile = 'guest';
+      this.context.authenticated = false;
+    }
+    this.context.agent = this.mapRoleToAgent(this.context.profile);
+    console.log('[HotelAI] Context updated:', this.context);
+  }
+
+  mapRoleToAgent(role) {
+    switch (role) {
+      case 'staff':
+      case 'admin':
+        return 'tecnico';
+      case 'proveedor':
+        return 'administrativo';
+      default:
+        return 'orquestrador';
+    }
+  }
+
+  // ... existing methods
+
+  loadHistory() {
+    try {
+      const stored = localStorage.getItem(this.storageKey);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        this.conversationHistory = Array.isArray(parsed) ? parsed.slice(-this.maxHistory * 2) : [];
+      }
+    } catch (e) {
+      console.warn('Failed to load chat history:', e);
+    }
+  }
+
+  saveHistory() {
+    try {
+      localStorage.setItem(this.storageKey, JSON.stringify(this.conversationHistory.slice(-this.maxHistory * 2)));
+    } catch (e) {
+      console.warn('Failed to save chat history:', e);
+    }
   }
 
   init() {
@@ -71,9 +157,15 @@ class HotelAI {
             <div class="ai-chat-avatar">AI</div>
             <div class="ai-chat-title">
               <h4>Hotel AI</h4>
-              <p>${this.lang === 'es' ? 'Online · 24/7' : this.lang === 'gl' ? 'En liña · 24/7' : 'Online · 24/7'}</p>
+              <p id="aiStatusText">${this.lang === 'es' ? 'Online · 24/7' : this.lang === 'gl' ? 'En liña · 24/7' : 'Online · 24/7'}</p>
             </div>
           </div>
+          <div class="ai-chat-user" id="aiUserSection" style="display:none;">
+            <span id="aiUserName"></span>
+            <span class="ai-user-badge" id="aiUserBadge"></span>
+            <button class="ai-logout-btn" id="aiLogoutBtn" title="${this.lang === 'es' ? 'Cerrar sesión' : this.lang === 'gl' ? 'Pechar sesión' : 'Sign out'}"><i class="fas fa-sign-out-alt"></i></button>
+          </div>
+          <button class="ai-login-btn" id="aiLoginBtn" title="${this.lang === 'es' ? 'Iniciar sesión' : this.lang === 'gl' ? 'Iniciar sesión' : 'Sign in'}"><i class="fas fa-user"></i></button>
           <button class="ai-chat-close" id="aiClose"><i class="fas fa-times"></i></button>
         </div>
         <div class="ai-chat-messages" id="aiMessages">
@@ -106,19 +198,141 @@ class HotelAI {
       </div>
     `;
 
+    </div>
+    `;
+
+    // Login Modal
+    const modalHtml = `
+      <div class="ai-login-modal" id="aiLoginModal" style="display:none;">
+        <div class="ai-login-modal-content">
+          <div class="ai-login-modal-header">
+            <h4 id="aiLoginModalTitle">${this.lang === 'es' ? 'Iniciar sesión' : this.lang === 'gl' ? 'Iniciar sesión' : 'Sign in'}</h4>
+            <button class="ai-login-modal-close" id="aiLoginModalClose"><i class="fas fa-times"></i></button>
+          </div>
+          <form id="aiLoginForm">
+            <div class="ai-login-field">
+              <label for="aiLoginEmail">${this.lang === 'es' ? 'Email' : this.lang === 'gl' ? 'Email' : 'Email'}</label>
+              <input type="email" id="aiLoginEmail" required autocomplete="email" placeholder="usuario@ejemplo.com">
+            </div>
+            <div class="ai-login-field">
+              <label for="aiLoginPassword">${this.lang === 'es' ? 'Contraseña' : this.lang === 'gl' ? 'Contrasinal' : 'Password'}</label>
+              <input type="password" id="aiLoginPassword" required autocomplete="current-password" placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn btn-primary" id="aiLoginSubmit" style="width:100%;justify-content:center;">
+              <span id="aiLoginSubmitText">${this.lang === 'es' ? 'Entrar' : this.lang === 'gl' ? 'Entrar' : 'Sign in'}</span>
+              <i class="fas fa-spinner fa-spin" id="aiLoginSpinner" style="display:none;"></i>
+            </button>
+            <p class="ai-login-error" id="aiLoginError" style="display:none;color:#ef4444;font-size:0.85rem;margin-top:8px;"></p>
+          </form>
+        </div>
+      </div>
+    `;
+
     const container = document.createElement('div');
     container.id = 'hotelAIContainer';
-    container.innerHTML = html;
+    container.innerHTML = html + modalHtml;
     document.body.appendChild(container);
     this.loadFontAwesome();
   }
 
-  loadFontAwesome() {
-    if (!document.querySelector('link[href*="font-awesome"]')) {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css';
-      document.head.appendChild(link);
+  openLoginModal() {
+    const modal = document.getElementById('aiLoginModal');
+    modal.style.display = 'flex';
+    setTimeout(() => document.getElementById('aiLoginEmail')?.focus(), 100);
+  }
+
+  closeLoginModal() {
+    const modal = document.getElementById('aiLoginModal');
+    modal.style.display = 'none';
+    const form = document.getElementById('aiLoginForm');
+    if (form) form.reset();
+    document.getElementById('aiLoginError').style.display = 'none';
+  }
+
+  async handleLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('aiLoginEmail').value.trim();
+    const password = document.getElementById('aiLoginPassword').value;
+    const submitBtn = document.getElementById('aiLoginSubmit');
+    const spinner = document.getElementById('aiLoginSpinner');
+    const submitText = document.getElementById('aiLoginSubmitText');
+    const errorEl = document.getElementById('aiLoginError');
+
+    if (!email || !password) return;
+
+    submitBtn.disabled = true;
+    spinner.style.display = 'inline-block';
+    document.getElementById('aiLoginSubmitText').style.display = 'none';
+    errorEl.style.display = 'none';
+
+    try {
+      const { signInWithEmail } = await import('./supabase.js');
+      const { data, error } = await signInWithEmail(
+        document.getElementById('aiLoginEmail').value.trim(),
+        document.getElementById('aiLoginPassword').value
+      );
+
+      if (error) throw error;
+
+      this.closeLoginModal();
+      await this.updateAuthUI();
+    } catch (err) {
+      console.error('Login error:', err);
+      const errorEl = document.getElementById('aiLoginError');
+      errorEl.textContent = err.message || (this.lang === 'es' ? 'Error al iniciar sesión' : this.lang === 'gl' ? 'Erro ao iniciar sesión' : 'Sign in failed');
+      errorEl.style.display = 'block';
+    } finally {
+      document.getElementById('aiLoginSubmit').disabled = false;
+      document.getElementById('aiLoginSpinner').style.display = 'none';
+      document.getElementById('aiLoginSubmitText').style.display = 'inline';
+    }
+  }
+
+  async handleLogout() {
+    try {
+      const { signOut } = await import('./supabase.js');
+      await signOut();
+      await this.updateAuthUI();
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
+  }
+
+  async updateAuthUI() {
+    const { getSession, getCurrentUserRole } = await import('./supabase.js');
+    const session = await getSession();
+    const role = session?.user ? await getSession().then(s => s?.user ? getCurrentUserRole() : 'guest') : 'guest';
+
+    const loginBtn = document.getElementById('aiLoginBtn');
+    const userSection = document.getElementById('aiUserSection');
+    const userName = document.getElementById('aiUserName');
+    const userBadge = document.getElementById('aiUserBadge');
+    const statusText = document.getElementById('aiStatusText');
+
+    if (session?.user) {
+      const profile = await this.getUserProfile(session.user.id);
+      const displayName = profile?.full_name || session.user.email?.split('@')[0] || 'Usuario';
+      const roleLabel = { staff: 'Staff', proveedor: 'Proveedor', admin: 'Admin', guest: 'Huésped' }[role] || 'Huésped';
+
+      loginBtn.style.display = 'none';
+      userSection.style.display = 'flex';
+      userName.textContent = displayName;
+      userBadge.textContent = roleLabel;
+      userBadge.className = `ai-user-badge ai-role-${role}`;
+      statusText.textContent = this.lang === 'es' ? `Conectado como ${roleLabel}` : this.lang === 'gl' ? `Conectado como ${roleLabel}` : `Logged in as ${roleLabel}`;
+    } else {
+      loginBtn.style.display = 'flex';
+      userSection.style.display = 'none';
+      statusText.textContent = this.lang === 'es' ? 'Online · 24/7' : this.lang === 'gl' ? 'En liña · 24/7' : 'Online · 24/7';
+    }
+  }
+
+  async getUserProfile(userId) {
+    try {
+      const { getUserProfile } = await import('./supabase.js');
+      return getUserProfile(userId);
+    } catch {
+      return null;
     }
   }
 
@@ -130,12 +344,21 @@ class HotelAI {
     const input = document.getElementById('aiInput');
     const mic = document.getElementById('aiMic');
     const bubble = document.getElementById('aiBubble');
+    const loginBtn = document.getElementById('aiLoginBtn');
+    const logoutBtn = document.getElementById('aiLogoutBtn');
+    const loginModal = document.getElementById('aiLoginModal');
+    const loginModalClose = document.getElementById('aiLoginModalClose');
+    const loginForm = document.getElementById('aiLoginForm');
 
     toggle?.addEventListener('click', () => this.toggleChat());
     close?.addEventListener('click', () => this.closeChat());
     send?.addEventListener('click', () => this.sendMessage());
     input?.addEventListener('keydown', (e) => { if (e.key === 'Enter') this.sendMessage(); });
     mic?.addEventListener('click', () => this.toggleVoiceInput());
+    loginBtn?.addEventListener('click', () => this.openLoginModal());
+    logoutBtn?.addEventListener('click', () => this.handleLogout());
+    loginModalClose?.addEventListener('click', () => this.closeLoginModal());
+    loginForm?.addEventListener('submit', (e) => this.handleLogin(e));
 
     setTimeout(() => { bubble?.classList.add('show'); }, 1500);
     setTimeout(() => { bubble?.classList.remove('show'); }, 8000);
@@ -149,6 +372,11 @@ class HotelAI {
       if (this.isSpeaking && !e.target.closest('.ai-action-btn')) {
         // Don't stop speaking on other clicks
       }
+    });
+
+    // Close modal on backdrop click
+    loginModal?.addEventListener('click', (e) => {
+      if (e.target === loginModal) this.closeLoginModal();
     });
   }
 
@@ -171,10 +399,21 @@ class HotelAI {
         const msgs = document.getElementById('aiMessages');
         if (msgs) msgs.scrollTop = msgs.scrollHeight;
         document.getElementById('aiInput')?.focus();
+        this.restoreMessages();
       }, 100);
     } else {
       chat?.classList.remove('open');
     }
+  }
+
+  restoreMessages() {
+    const container = document.getElementById('aiMessages');
+    if (!container || container.children.length > 1) return; // Already has welcome + history
+
+    this.conversationHistory.forEach(msg => {
+      if (msg.sender !== 'user' && msg.sender !== 'ai') return;
+      this.addMessage(msg.text, msg.sender, false);
+    });
   }
 
   closeChat() {
@@ -191,26 +430,21 @@ class HotelAI {
     input.value = '';
 
     this.addMessage(text, 'user');
-    this.conversationHistory.push({ sender: 'user', text });
-
     this.showTyping();
 
     try {
       const response = await this.callAI(text);
       this.hideTyping();
       this.addMessage(response, 'ai');
-      this.conversationHistory.push({ sender: 'ai', text: response });
     } catch (e) {
       console.warn('AI call failed, using fallback:', e);
       this.hideTyping();
       try {
         const fallback = await this.processLocalFallback(text);
         this.addMessage(fallback, 'ai');
-        this.conversationHistory.push({ sender: 'ai', text: fallback });
       } catch (e2) {
         console.error('Fallback also failed:', e2);
         this.addMessage(this.t('ai.notFound'), 'ai');
-        this.conversationHistory.push({ sender: 'ai', text: this.t('ai.notFound') });
       }
     }
   }
@@ -226,7 +460,7 @@ class HotelAI {
         body: JSON.stringify({
           message,
           lang: this.lang,
-          agent: this.context.agent || 'orquestrador',
+          agent: this.context.agent,
           history: this.conversationHistory.slice(-10),
         }),
         signal: controller.signal,
@@ -247,14 +481,14 @@ class HotelAI {
     }
   }
 
-  addMessage(text, sender) {
+addMessage(text, sender, saveToHistory = true) {
     const container = document.getElementById('aiMessages');
     if (!container) return;
 
     const div = document.createElement('div');
     div.className = `ai-message ${sender}`;
     const plain = text.replace(/<[^>]*>/g, '').replace(/\*\*/g, '').replace(/\n/g, ' ');
-    const escaped = plain.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    const escaped = plain.replace(/'/g, "\\'").replace(/"/g, '"');
 
     div.innerHTML = `
       <div class="ai-message-avatar"><i class="fas ${sender === 'user' ? 'fa-user' : 'fa-robot'}"></i></div>
@@ -273,6 +507,11 @@ class HotelAI {
     `;
     container.appendChild(div);
     container.scrollTop = container.scrollHeight;
+
+    if (saveToHistory && (sender === 'user' || sender === 'ai')) {
+      this.conversationHistory.push({ sender, text });
+      this.saveHistory();
+    }
   }
 
   showTyping() {
