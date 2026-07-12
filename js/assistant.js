@@ -1,6 +1,7 @@
 /* === HOTEL AI - ASISTENTE VIRTUAL INTELIGENTE CON RAG === */
 /* Basado en el megaprompt: Hotel AI Ecosystem - Arquitectura de Agentes */
 /* Integración con OpenRouter + Voz (STT/TTS) + Compartir/Copiar/RRSS */
+/* Build: 2026-01-17-v2 */
 
 class HotelAI {
   constructor() {
@@ -23,6 +24,22 @@ class HotelAI {
     } catch (e) {
       console.error('[HotelAI] Init failed:', e);
     }
+    // Debug: create visible test element
+    if (document.readyState !== 'loading') {
+      this.createDebugBadge();
+    } else {
+      document.addEventListener('DOMContentLoaded', () => this.createDebugBadge());
+    }
+  }
+
+  createDebugBadge() {
+    if (document.getElementById('aiDebugBadge')) return;
+    const badge = document.createElement('div');
+    badge.id = 'aiDebugBadge';
+    badge.style.cssText = 'position:fixed;top:10px;right:10px;background:#4a8c3f;color:white;padding:4px 8px;border-radius:4px;font-size:11px;z-index:99999;font-family:monospace;';
+    badge.textContent = 'HotelAI loaded';
+    document.body.appendChild(badge);
+    setTimeout(() => badge.remove(), 5000);
   }
 
   getOrCreateSessionId() {
