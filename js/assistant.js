@@ -963,7 +963,16 @@ function smoothScroll(target) {
 }
 
 function initHotelAI() {
+  console.log('[HotelAI] Initializing...');
   window.hotelAI = new HotelAI();
+  window.smoothScroll = smoothScroll;
+  console.log('[HotelAI] Initialized:', !!window.hotelAI);
+  // Debug badge
+  const badge = document.createElement('div');
+  badge.style.cssText = 'position:fixed;top:10px;right:10px;background:#4a8c3f;color:#fff;padding:4px 8px;border-radius:4px;font:12px monospace;z-index:99999';
+  badge.textContent = 'HotelAI loaded';
+  document.body.appendChild(badge);
+  setTimeout(() => badge.remove(), 3000);
   window.smoothScroll = smoothScroll;
 }
 
