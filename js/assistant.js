@@ -4,6 +4,7 @@
 
 class HotelAI {
   constructor() {
+    console.log('[HotelAI] Constructor called');
     this.lang = 'es';
     this.context = { profile: 'guest', authenticated: false, agent: 'orquestrador' };
     this.conversationHistory = [];
@@ -17,7 +18,11 @@ class HotelAI {
     this.sessionId = this.getOrCreateSessionId();
     this.authUnsubscribe = null;
     this.loadHistory();
-    this.init();
+    try {
+      this.init();
+    } catch (e) {
+      console.error('[HotelAI] Init failed:', e);
+    }
   }
 
   getOrCreateSessionId() {
